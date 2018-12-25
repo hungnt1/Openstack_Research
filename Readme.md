@@ -38,7 +38,7 @@ Ghi chép quá trình tìm hiểu OpenStack
 - [Làm việc với Nova](https://github.com/nguyenhungsync/Report-Intern-Meditech/blob/master/Openstack/Nova/3.Nova-Client%26Curl.md)
 - [Các quá trình trong Nova](https://github.com/nguyenhungsync/Report-Intern-Meditech/blob/master/Openstack/Nova/4.%20Nova-Instance-Work-flow.md)
 - [Debug](https://github.com/nguyenhungsync/Report-Intern-Meditech/blob/master/Openstack/Nova/5.%20Debug.md)
-
+- [Các cấu hình trong Nova](https://github.com/nguyenhungsync/Openstack_Research/blob/master/Nova/6.%20Config-section.md)
 ### 5. Neutron
 
 - [Giới thiệu về Neutron](https://github.com/nguyenhungsync/Report-Intern-Meditech/blob/master/Openstack/Neutron/1.%20Introduction-neutron.md)
@@ -51,6 +51,18 @@ Ghi chép quá trình tìm hiểu OpenStack
 - [Cấu hình Bonding](https://github.com/nguyenhungsync/Report-Intern-Meditech/blob/master/Openstack/Neutron/6.%20Bonding.md)
 - [Tìm hiểu VXLAN](https://github.com/nguyenhungsync/Report-Intern-Meditech/blob/master/Openstack/Neutron/7.%20VXLAN.md)
 - [Tìm hiểu OpenvSwitch trong OPS](https://github.com/nguyenhungsync/Report-Intern-Meditech/blob/master/Openstack/Neutron/8.%20OVS.md)
+- [Packet Flow sử dụng OpenvSwitch - Self Service ](https://github.com/nguyenhungsync/Openstack_Research/blob/master/Neutron/9.%20OPS-Packet-Self-Service.md)
+- [Packet Flow sử dung OpenvSwitch - Provider ](https://github.com/nguyenhungsync/Openstack_Research/blob/master/Neutron/10.%20OPS-Packet-Provider.md)
+
+## 6. Cinder
+
+- [Giới thiệu về Cinder](https://github.com/nguyenhungsync/Openstack_Research/blob/master/Cinder/1.%20Introduction-cinder.md)
+- [Mối quan hệ giữa instance và disk ](https://github.com/nguyenhungsync/Openstack_Research/blob/master/Cinder/2.%20Cinder-Disk-Work-Flow.md)
+- [Cài đặt Cinder sử dụng LVM backend](https://github.com/nguyenhungsync/Openstack_Research/blob/master/Cinder/3.%20Install-Cinder-LVM.md)
+- [Cài đặt Cinder sử dụng LVM và NFS](https://github.com/nguyenhungsync/Openstack_Research/blob/master/Cinder/5.%20Install-Multi-Backend.md)
+- [Sử dụng Cinder cơ bản](https://github.com/nguyenhungsync/Openstack_Research/blob/master/Cinder/4.%20Basic-Command.md)
+- [Filter trong Multi Backend Cinder](https://github.com/nguyenhungsync/Openstack_Research/blob/master/Cinder/6.%20Filtering-Multi-Backend.md)
+
 ### 10. Mở rộng
 
 - [Key Rorate và Decrypt trong Keystone](https://github.com/nguyenhungsync/Report-Intern-Meditech/blob/master/Openstack/Advance/1.%20Key-Rotate-%26-Decrypt.md)
