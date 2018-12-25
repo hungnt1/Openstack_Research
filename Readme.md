@@ -66,3 +66,8 @@ Ghi chép quá trình tìm hiểu OpenStack
 - [Recuse instnace](https://github.com/nguyenhungsync/Report-Intern-Meditech/blob/master/Openstack/Advance/9.%20Rescue-instance.md)
 - [Giới hạn CPU Resource trong Nova](https://github.com/nguyenhungsync/Report-Intern-Meditech/blob/master/Openstack/Advance/10.%20Limit-CPU-Resource.md)
 - [Metadata](https://github.com/nguyenhungsync/Report-Intern-Meditech/blob/master/Openstack/Advance/11.%20Metadata.md)
+
+- [Cấu hình VXLAN OVS Tunnel](https://github.com/nguyenhungsync/Openstack_Research/blob/master/Neutron/11.%20VXLAN-Tunnel.md)
+- [Cấu hình join VXLAN Tunnel Openstack](https://github.com/nguyenhungsync/Openstack_Research/blob/master/Neutron/11.%20VXLAN-Tunnel.md)
+- [Tìm hiểu Cloud Init](https://github.com/nguyenhungsync/Openstack_Research/blob/master/Advance/12.%20Cloud-init.md)
+- [Tìm hiểu Cloud INIT -2 ](https://github.com/nguyenhungsync/Openstack_Research/blob/master/Advance/13.%20Cloud-init-Script.md)
