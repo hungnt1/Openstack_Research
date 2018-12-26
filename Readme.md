@@ -5,7 +5,7 @@ Ghi chép quá trình tìm hiểu OpenStack
 - Môi trường : Centos 7.5
 - Phiên bản : Openstack Queens
 - Hypervisor : KVM/QEMU
-
+- Có sử dụng FirewallD, không sử dụng SeLinux (   permissive mode ) 
 
 ## Mục Lục
 
@@ -83,3 +83,6 @@ Ghi chép quá trình tìm hiểu OpenStack
 - [Cấu hình join VXLAN Tunnel Openstack](https://github.com/nguyenhungsync/Openstack_Research/blob/master/Neutron/11.%20VXLAN-Tunnel.md)
 - [Tìm hiểu Cloud Init](https://github.com/nguyenhungsync/Openstack_Research/blob/master/Advance/12.%20Cloud-init.md)
 - [Tìm hiểu Cloud INIT -2 ](https://github.com/nguyenhungsync/Openstack_Research/blob/master/Advance/13.%20Cloud-init-Script.md)
+- [Tìm hiểu QOS trong Neutron](https://github.com/nguyenhungsync/Openstack_Research/blob/master/Advance/14.%20QOS%20-%20Neutron.md)
+- [Tìm hiểu QOS trong Cinder](https://github.com/nguyenhungsync/Openstack_Research/blob/master/Advance/15.%20QOS%20-%20Cinder.md)
+- [Tìm hiểu Cinder Backup sử dụng NFS](https://github.com/nguyenhungsync/Openstack_Research/blob/master/Advance/16.%20Cinder-Backup-NFS.md)
