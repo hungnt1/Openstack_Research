@@ -17,7 +17,7 @@ Ghi chép quá trình tìm hiểu OpenStack
 ### 2. Keystone
 
 - [Giới thiệu về  Openstack  Identity](https://github.com/nguyenhungsync/Report-Intern-Meditech/blob/master/Openstack/Keystone/1.%20Introduction-Keystone.md)
-- [Cài đặt Keystone ](https://github.com/nguyenhungsync/Report-Intern-Meditech/blob/master/Openstack/Keystone/1.%20Introduction-Keystone.md)
+- [Cài đặt Keystone ](https://github.com/nguyenhungsync/Openstack_Research/blob/master/Keystone/2.Install-Keystone.md)
 - [Các tùy chọn trong Keystone](https://github.com/nguyenhungsync/Report-Intern-Meditech/blob/master/Openstack/Keystone/4.%20Config-Keystone.md)
 - [Làm việc với Keystone](https://github.com/nguyenhungsync/Report-Intern-Meditech/blob/master/Openstack/Keystone/5.%20Keystone-Openstack-CLI.md)
 - [Làm việc với Keystone (2) ]( https://github.com/nguyenhungsync/Report-Intern-Meditech/blob/master/Openstack/Keystone/6.%20Keystone-CURL.md)
