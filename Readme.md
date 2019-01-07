@@ -63,6 +63,21 @@ Ghi chép quá trình tìm hiểu OpenStack
 - [Sử dụng Cinder cơ bản](https://github.com/nguyenhungsync/Openstack_Research/blob/master/Cinder/4.%20Basic-Command.md)
 - [Filter trong Multi Backend Cinder](https://github.com/nguyenhungsync/Openstack_Research/blob/master/Cinder/6.%20Filtering-Multi-Backend.md)
 
+## 7. HA Proxy và KeepAlived
+
+- [Giới thiệu về HA, HA Proxy và Keep Alived](https://github.com/nguyenhungsync/Openstack_Research/blob/master/High-availability/1.HA-Proxy---KeepAlive/1.Intro.md)
+- [Cài đặt HA Proxy và Keep Alived](https://github.com/nguyenhungsync/Openstack_Research/blob/master/High-availability/1.HA-Proxy---KeepAlive/2.%20Setup-HA-Proxy-%26%26-KeepAlive.md)
+- [Cài đặt HA Proxy và Keep Alived trên Openstack VM](https://github.com/nguyenhungsync/Openstack_Research/blob/master/High-availability/1.HA-Proxy---KeepAlive/3.HA-Proxy-OPS.md)
+
+## 8. Barbican
+
+- [Giới thiệu và cài đặt Barbican ](https://github.com/nguyenhungsync/Openstack_Research/blob/master/Barbican/1.%20Intro-Setup.md)
+- [Thao tác cơ bản với Barbican](https://github.com/nguyenhungsync/Openstack_Research/blob/master/Barbican/1.%20Intro-Setup.md)
+
+## 9. Octavia
+
+- [Giới thiệu và cài đặt Octavia](https://github.com/nguyenhungsync/Openstack_Research/tree/master/High-availability/2.%20Octavia) - Chưa hoàn thành
+
 ### 10. Mở rộng
 
 - [Key Rorate và Decrypt trong Keystone](https://github.com/nguyenhungsync/Report-Intern-Meditech/blob/master/Openstack/Advance/1.%20Key-Rotate-%26-Decrypt.md)
