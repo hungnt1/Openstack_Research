@@ -1,7 +1,7 @@
 
 
 Ghi chép quá trình tìm hiểu OpenStack
-
+- Creator : Nguyen Trong Hung
 - Môi trường : Centos 7.5
 - Phiên bản : Openstack Queens
 - Hypervisor : KVM/QEMU
