@@ -76,7 +76,8 @@ Ghi chép quá trình tìm hiểu OpenStack
 
 ## 9. Octavia
 
-- [Giới thiệu và cài đặt Octavia](https://github.com/nguyenhungsync/Openstack_Research/tree/master/High-availability/2.%20Octavia) - Chưa hoàn thành
+- [Giới thiệu và cài đặt Octavia](https://github.com/nguyenhungsync/Openstack_Research/tree/master/High-availability/2.%20Octavia) - 
+- [Sử dụng Octavia](https://github.com/nguyenhungsync/Openstack_Research/blob/master/High-availability/2.%20Octavia/2.Use-Octavia.md)
 
 ### 10. Mở rộng
 
