@@ -78,7 +78,7 @@ Ghi chép quá trình tìm hiểu OpenStack
 
 - [Giới thiệu và cài đặt Octavia Single](https://github.com/nguyenhungsync/Openstack_Research/blob/master/High-availability/2.%20Octavia/1.Intro%2BSetup.md)
 - [Sử dụng Octavia Self-Service](https://github.com/nguyenhungsync/Openstack_Research/blob/master/High-availability/2.%20Octavia/2.Use-Octavia.md)
-- [Cài đặt , sử dụng Octavia Provider && Deep Dive Amphora VM](https://github.com/nguyenhungsync/Openstack_Research/tree/master/High-availability/2.%20Octavia)
+- [Cài đặt , sử dụng Octavia Provider && Deep Dive Amphora VM](https://github.com/nguyenhungsync/Openstack_Research/blob/master/High-availability/2.%20Octavia/3.%20Octavia-Keep-Alived.md)
 - [Sử dụng Octaiva VIP QOS](https://github.com/nguyenhungsync/Openstack_Research/blob/master/High-availability/2.%20Octavia/4%20.VIP-QOS.md)
 - [Lý thuyết Octavia L7 Policy](https://github.com/nguyenhungsync/Openstack_Research/blob/master/High-availability/2.%20Octavia/5.Theory-Octavia-L7-Policy.md)
 - [Sử dụng Octavia L7 Policy](https://github.com/nguyenhungsync/Openstack_Research/blob/master/High-availability/2.%20Octavia/6.%20LAB-Octavia-L7-Policy.md)
