@@ -1,0 +1,41 @@
+
+## HAproxy ACL ( Access Control List ) 
+
+
+## 1. Cơ bản về ACL
+- Access Control List trong HAproxy cho phép kiểm tra trên nhiều điều kiện các nhau và thực hiện một số task dựa trên các bài test này. Những điều kiện này có thể làm việc content một request hoặc response dựa việc tìm kiếm string và patterns. , kiểm tra IP, TLS status , các status code có trong môi trường
+
+- Cấu trúc một ACL trong HAproxy
+```
+   acl <aclname> <criterion> [flags] [operator] [<value>] ...
+```
+
+## 2. Khởi tạo ACL
+
+- Có 2 kiểu để xây dựng một ACL : named ACL và in-line ACL
+
+
+- Ví dụ
+```
+acl is_static path -i -m beg /static
+```
+
+- Ta sẽ có `is_static` se là tên của ACL. ACL này có thể được sử dụng bởi if và unlesss `use_backend be_static if is_static`. Tiếp theo là câu điều kiện `path -i -m beg /static`. kiểm tra xem nếu URI bắt đầu bởi /static  .
+- Đối với ALC trên chuyển thành type in-line hoặc anomymouse sẽ cso dạng sau :
+```
+use_backend be_static if { path -i -m beg /static }
+```
+
+## 3. Fetch
+
+- Như ví dụ đơn giản trên , `path`  được hiểu là nguồn cung cấp thông tin cho quá trình test trong ACL này . Source information trong HAproxy được hiểu là fetch. Có thể xem đầy đủ các fetch tại đây  : https://www.haproxy.com/documentation/hapee/1-8r1/onepage/#7.3.2
+
+- Dưới đây là một số fetch thường sử dụng
+	- src : trả về IP của các client
+	- path : trả về PATH của các request từ client
+	- url_param(foo) : chỉ định một URL 
+	- req.hdr(foo)  : chỉ định một HTTP header
+	- ssl_fc : Một boolean trả về true nếu kết nối được tạo qua SSL 
+
+## 4 Converters
+Conv
