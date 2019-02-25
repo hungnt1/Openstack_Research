@@ -540,7 +540,7 @@ rabbit_durable_queues=true
 ## 8. Cấu hình HAproxy 
 
 
-### 8.1. Cấu hình HAproxy và Pacemaker trên NODE1
+### 8.1. Cấu hình HAproxy và Pacemaker cho cụm MariaDB
 
 
 -  Clustercheck là  chương trình bash hữu ích để tạo proxy (ví dụ: HAProxy) có khả năng giám sát Galera MariaDB Cluster
@@ -548,7 +548,7 @@ rabbit_durable_queues=true
 ```
 # Get bash program , socket and server 
 wget https://raw.githubusercontent.com/nguyenhungsync/percona-clustercheck/master/clustercheck -P /usr/bin
-wget https://raw.githubusercontent.com/nguyenhungsync/percona-clustercheck/master/systemd/mysqlchk.socket -P /usr/lib/systemd/system
+wget https://raw.githubusercontent.com/nguyenhungsync/percona-clustercheck/master/systemd/mysqlchk.sockeariaDBt -P /usr/lib/systemd/system
 wget https://raw.githubusercontent.com/nguyenhungsync/percona-clustercheck/master/systemd/mysqlchk%40.service -P /usr/lib/systemd/system
 
 ## Phan quyen 
