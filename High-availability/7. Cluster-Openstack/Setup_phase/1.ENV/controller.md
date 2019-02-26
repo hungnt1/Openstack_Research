@@ -1,13 +1,12 @@
 
   
-  
+
 
 ## Cấu hình môi trường node controlller
 
   
 
-## 1. Openstack Package
-
+## 1. Openstack Package 
   
 - Qúa trình cài đặt sử dụng tài liệu tại : https://docs.openstack.org/rocky/install/
 
@@ -28,6 +27,8 @@ yum -y upgrade
 ```
 yum install -y python-openstackclient
 ```
+
+
 
 
 ## 2. HAproxy
@@ -163,6 +164,7 @@ pcs constraint colocation add VirtualIP with HAproxy INFINITY
 
   
 ## 4. Network Time Protocol ( NTP )  
+
 
 ### 4.1 Cài đặt và cấu hình NTP Server
 
@@ -394,7 +396,7 @@ firewall-cmd --reload
 galera_new_cluster
 ```
 
-- Khởi tạo Password User root
+- Khởi tạo Password User root ( tùy chọn )
 ```
 mysqladmin --user=root password "123@123Aa"
 ```
@@ -477,7 +479,7 @@ rabbitmqctl start_app
 rabbitmqctl cluster_status
 ```
 
-### 7.3. Cấu hình OpenStack Service sử dụng RabbitMQ HA
+### 6.3. Cấu hình OpenStack Service sử dụng RabbitMQ HA
 
 - Cấu hình các node
 ```
@@ -564,7 +566,7 @@ chmod +r /usr/lib/systemd/system/mysqlchk@.service
 
 ## Khoi tao user check
 
-mysql -u root -p123@123Aa -e "GRANT PROCESS ON *.* TO 'clustercheckuser'@'localhost' IDENTIFIED BY '123@123Aa'"
+mysql -u root -e "GRANT PROCESS ON *.* TO 'clustercheckuser'@'localhost' IDENTIFIED BY '123@123Aa'"
 
 ## Start socket
 
@@ -589,7 +591,6 @@ listen mariadb_cluster 192.168.50.140:3306
         server mariadb1 192.168.50.131:3306 check 
         server mariadb2 192.168.50.132:3306 check backup
         server mariadb3 192.168.50.133:3306 check backup 
-
 EOF
 ```
 
@@ -598,3 +599,12 @@ EOF
 ```
 pcs resource restart HAproxy
 ```
+
+- Chuyển Resource về Node Controlller 1 ( để node 1 làm master cho các cấu hình Service)
+
+```
+pcs resource move VirtualIP controller1
+
+```
+
+END.
