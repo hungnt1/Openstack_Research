@@ -411,44 +411,10 @@ systemctl enable mariadb
 
 
 
-## 6. Memcached
 
-### 6.1 Cài đặt và cấu hình Memcached
-```
- yum install -y memcached python-memcached
-```
+## 6. RabbitMQ
 
-
-- Cho phép truy cập qua địa chỉ IP Management ( địa chỉ trên của các node ) 
-```
-sed -i "s/-l 127.0.0.1,::1/-l 127.0.0.1,::1,$IP_NODE/g" /etc/sysconfig/memcached
-```
-
-- Cấu hình FirewallD
-```
-firewall-cmd --add-port=11211/tcp --permanent
-firewall-cmd --reload
-```
-
-
-- Khởi động dịch vụ
-```
-systemctl enable memcached.service
-systemctl start memcached.service
-```
-
-
-#### 6.2. Khai báo HA
-
-- Cấu trúc khai báo  
-```
-Memcached_servers = controller1:11211,controller2:11211,controller3:11211
-```
-
-
-## 7. RabbitMQ
-
-### 7.1. Cài đặt RabbitMQ Server
+### 6.1. Cài đặt RabbitMQ Server
 
 - Cài đặt package
 ```
@@ -463,6 +429,9 @@ systemctl restart rabbitmq-server
 rabbitmqctl delete_user guest
 rabbitmqctl add_user nguyenhungsync 123@123Aa 
 rabbitmqctl set_user_tags nguyenhungsync administrator 
+rabbitmqctl add_user openstack rabbitmq_123
+rabbitmqctl set_permissions openstack ".*" ".*" ".*"
+
 ```
 
 -   Cấu hình FirewallD Rule
@@ -478,7 +447,7 @@ firewall-cmd --reload
 rabbitmqctl set_policy ha-all '^(?!amq\.).*' '{"ha-mode": "all"}'
 ```
 
-### 7.2. Khởi động Cluster
+### 6.2. Khởi động Cluster
 
 - Copy Erlang cookie từ controller node 1 sang các node khác 
 ```
@@ -537,8 +506,45 @@ rabbit_durable_queues=true
 ```
 
 
-## 8. Cấu hình HAproxy 
 
+## 7. Memcached
+
+### 7.1 Cài đặt và cấu hình Memcached
+```
+ yum install -y memcached python-memcached
+```
+
+
+- Cho phép truy cập qua địa chỉ IP Management ( địa chỉ trên của các node ) 
+```
+sed -i "s/-l 127.0.0.1,::1/-l 127.0.0.1,::1,$IP_NODE/g" /etc/sysconfig/memcached
+```
+
+- Cấu hình FirewallD
+```
+firewall-cmd --add-port=11211/tcp --permanent
+firewall-cmd --reload
+```
+
+
+- Khởi động dịch vụ
+```
+systemctl enable memcached.service
+systemctl start memcached.service
+```
+
+
+#### 7.2. Khai báo HA
+
+- Cấu trúc khai báo  
+```
+Memcached_servers = controller1:11211,controller2:11211,controller3:11211
+```
+
+
+
+
+## 8 Cấu hình HAproxy 
 
 ### 8.1. Cấu hình HAproxy và Pacemaker trên NODE1
 
@@ -587,4 +593,8 @@ listen mariadb_cluster 192.168.50.140:3306
 EOF
 ```
 
+- Khởi động lại Resource HAproxy
 
+```
+pcs resource restart HAproxy
+```
