@@ -228,6 +228,7 @@ wsrep_cluster_address="gcomm://192.168.50.131,192.168.50.132,192.168.50.133"
 
 binlog_format=row
 default_storage_engine=InnoDB
+wsrep_slave_threads = 2
 innodb_autoinc_lock_mode=2
 
 #Cluster name
@@ -587,6 +588,7 @@ listen mariadb_cluster 192.168.50.140:3306
         mode tcp
         balance leastconn
         option httpchk
+        option tcpka
         default-server port 9200 inter 2s downinter 5s rise 3 fall 2 slowstart 60s maxconn 64 maxqueue 128 weight 100
         server mariadb1 192.168.50.131:3306 check 
         server mariadb2 192.168.50.132:3306 check backup
