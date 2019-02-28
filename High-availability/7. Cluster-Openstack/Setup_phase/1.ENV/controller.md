@@ -69,12 +69,12 @@ defaults
   timeout  check 10s
   
 listen stats 192.168.50.140:9000
-        mode http
-        stats enable
-        stats uri /stats
-        stats realm HAProxy\ Statistics
-        stats auth admin:123@123Aa
-        stats admin if TRUE
+  mode http
+  stats enable
+  stats uri /stats
+  stats realm HAProxy\ Statistics
+  stats auth admin:123@123Aa
+  stats admin if TRUE
 
 EOF
 ```
@@ -158,7 +158,7 @@ pcs resource create HAproxy systemd:haproxy op monitor interval=2s
 
 - Cấu hình bắt buộc HAproxy và VIP hoạt động trên cùng 1 node
 ```
-pcs constraint order VirtualIP vip then HAproxy
+pcs constraint order VirtualIP then HAproxy
 pcs constraint colocation add VirtualIP with HAproxy INFINITY
 ```
 
@@ -588,8 +588,10 @@ listen mariadb_cluster 192.168.50.140:3306
         mode tcp
         balance leastconn
         option httpchk
+        stick-table type ip size 1000
+        stick on dst
         option tcpka
-        default-server port 9200 inter 2s downinter 5s rise 3 fall 2 slowstart 60s maxconn 64 maxqueue 128 weight 100
+        default-server port 9200 inter 5s downinter 5s rise 3 fall 2 slowstart 60s maxconn 64 maxqueue 128 weight 100
         server mariadb1 192.168.50.131:3306 check 
         server mariadb2 192.168.50.132:3306 check backup
         server mariadb3 192.168.50.133:3306 check backup 
