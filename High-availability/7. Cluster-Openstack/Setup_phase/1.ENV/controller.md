@@ -204,7 +204,6 @@ yum install -y mariadb mariadb-server python2-PyMySQL galera mariadb-server-gale
 
 ```
 cat <<EOF > /etc/my.cnf.d/openstack.cnf
-
 [mysqld]
 bind-address = 192.168.50.131
 default-storage-engine = innodb
@@ -212,6 +211,36 @@ innodb_file_per_table = on
 max_connections = 4096
 collation-server = utf8_general_ci
 character-set-server = utf8
+expire-logs-days = 7
+log_slave_updates = 1
+log_bin_trust_function_creators = 1
+max-connect-errors = 1000000
+wait_timeout = 3600
+tmp-table-size = 32M
+max-heap-table-size = 32M
+query-cache-type = 0
+query-cache-size = 0M
+thread-cache-size = 50
+open-files-limit = 65535
+table-definition-cache = 4096
+table-open-cache = 10240
+innodb-flush-method = O_DIRECT
+innodb-log-file-size = 1024M
+innodb-flush-log-at-trx-commit = 1
+innodb-buffer-pool-size = 4096M
+innodb-read-io-threads = 2
+innodb-write-io-threads = 2
+innodb-doublewrite = 1
+innodb-log-buffer-size = 128M
+innodb-buffer-pool-instances = 8
+innodb-log-files-in-group = 2
+innodb-thread-concurrency = 64
+innodb_stats_on_metadata = 0
+connect_timeout = 43200
+max_allowed_packet = 1024M
+innodb_force_recovery = 4
+
+
 EOF
 ```
 
@@ -226,10 +255,17 @@ wsrep_provider=/usr/lib64/galera/libgalera_smm.so
 #add your node ips here
 wsrep_cluster_address="gcomm://192.168.50.131,192.168.50.132,192.168.50.133"
 
+
 binlog_format=row
+innodb_locks_unsafe_for_binlog=1
 default_storage_engine=InnoDB
-wsrep_slave_threads = 2
 innodb_autoinc_lock_mode=2
+wsrep_slave_threads=2
+wsrep_convert_LOCK_to_trx=0
+wsrep_retry_autocommit=1
+wsrep_auto_increment_control=1
+
+
 
 #Cluster name
 wsrep_cluster_name="galera_cluster"
@@ -275,21 +311,35 @@ innodb_file_per_table = on
 max_connections = 4096
 collation-server = utf8_general_ci
 character-set-server = utf8
-EOF
-```
+expire-logs-days = 7
+log_slave_updates = 1
+log_bin_trust_function_creators = 1
+max-connect-errors = 1000000
+wait_timeout = 3600
+tmp-table-size = 32M
+max-heap-table-size = 32M
+query-cache-type = 0
+query-cache-size = 0M
+thread-cache-size = 50
+open-files-limit = 65535
+table-definition-cache = 4096
+table-open-cache = 10240
+innodb-flush-method = O_DIRECT
+innodb-log-file-size = 1024M
+innodb-flush-log-at-trx-commit = 1
+innodb-buffer-pool-size = 4096M
+innodb-read-io-threads = 2
+innodb-write-io-threads = 2
+innodb-doublewrite = 1
+innodb-log-buffer-size = 128M
+innodb-buffer-pool-instances = 8
+innodb-log-files-in-group = 2
+innodb-thread-concurrency = 64
+innodb_stats_on_metadata = 0
+connect_timeout = 43200
+max_allowed_packet = 1024M
+innodb_force_recovery = 4
 
-
-- Khởi tạo file cấu hình tại `/etc/my.cnf.d`
-```
-cat <<EOF > /etc/my.cnf.d/openstack.cnf
-
-[mysqld]
-bind-address = 192.168.50.133
-default-storage-engine = innodb
-innodb_file_per_table = on
-max_connections = 4096
-collation-server = utf8_general_ci
-character-set-server = utf8
 EOF
 ```
 
@@ -306,8 +356,13 @@ wsrep_provider=/usr/lib64/galera/libgalera_smm.so
 wsrep_cluster_address="gcomm://192.168.50.131,192.168.50.132,192.168.50.133"
 
 binlog_format=row
+innodb_locks_unsafe_for_binlog=1
 default_storage_engine=InnoDB
 innodb_autoinc_lock_mode=2
+wsrep_slave_threads=2
+wsrep_convert_LOCK_to_trx=0
+wsrep_retry_autocommit=1
+wsrep_auto_increment_control=1
 
 #Cluster name
 wsrep_cluster_name="galera_cluster"
@@ -322,6 +377,8 @@ wsrep_node_address="192.168.50.132"
 wsrep_node_name="controller2"
 
 wsrep_sst_method=rsync
+
+
 
 EOF
 
@@ -340,7 +397,6 @@ firewall-cmd --reload
 - Cấu hình MarriaDB Server cho OPS
 ```
 cat <<EOF > /etc/my.cnf.d/openstack.cnf
-
 [mysqld]
 bind-address = 192.168.50.133
 default-storage-engine = innodb
@@ -348,6 +404,35 @@ innodb_file_per_table = on
 max_connections = 4096
 collation-server = utf8_general_ci
 character-set-server = utf8
+expire-logs-days = 7
+log_slave_updates = 1
+log_bin_trust_function_creators = 1
+max-connect-errors = 1000000
+wait_timeout = 3600
+tmp-table-size = 32M
+max-heap-table-size = 32M
+query-cache-type = 0
+query-cache-size = 0M
+thread-cache-size = 50
+open-files-limit = 65535
+table-definition-cache = 4096
+table-open-cache = 10240
+innodb-flush-method = O_DIRECT
+innodb-log-file-size = 1024M
+innodb-flush-log-at-trx-commit = 1
+innodb-buffer-pool-size = 4096M
+innodb-read-io-threads = 2
+innodb-write-io-threads = 2
+innodb-doublewrite = 1
+innodb-log-buffer-size = 128M
+innodb-buffer-pool-instances = 8
+innodb-log-files-in-group = 2
+innodb-thread-concurrency = 64
+innodb_stats_on_metadata = 0
+connect_timeout = 43200
+max_allowed_packet = 1024M
+innodb_force_recovery = 4
+
 EOF
 ```
 
@@ -360,12 +445,20 @@ cat <<EOF > /etc/my.cnf.d/galera.cnf
 wsrep_on=ON
 wsrep_provider=/usr/lib64/galera/libgalera_smm.so
 
+
+
 #add your node ips here
 wsrep_cluster_address="gcomm://192.168.50.131,192.168.50.132,192.168.50.133"
 
 binlog_format=row
+innodb_locks_unsafe_for_binlog=1
 default_storage_engine=InnoDB
 innodb_autoinc_lock_mode=2
+wsrep_slave_threads=2
+wsrep_convert_LOCK_to_trx=0
+wsrep_retry_autocommit=1
+wsrep_auto_increment_control=1
+
 
 #Cluster name
 wsrep_cluster_name="galera_cluster"
@@ -411,8 +504,6 @@ mysqladmin --user=root password "123@123Aa"
 systemctl start mariadb
 systemctl enable mariadb
 ```
-
-
 
 
 ## 6. RabbitMQ
@@ -555,24 +646,48 @@ Memcached_servers = controller1:11211,controller2:11211,controller3:11211
 -  Clustercheck là  chương trình bash hữu ích để tạo proxy (ví dụ: HAProxy) có khả năng giám sát Galera MariaDB Cluster
 -  Cấu hình Clustercheck
 ```
-# Get bash program , socket and server 
-wget https://raw.githubusercontent.com/nguyenhungsync/percona-clustercheck/master/clustercheck -P /usr/bin
-wget https://raw.githubusercontent.com/nguyenhungsync/percona-clustercheck/master/systemd/mysqlchk.sockeariaDBt -P /usr/lib/systemd/system
-wget https://raw.githubusercontent.com/nguyenhungsync/percona-clustercheck/master/systemd/mysqlchk%40.service -P /usr/lib/systemd/system
+## cai dat package
 
-## Phan quyen 
-chmod +x /usr/bin/clustercheck
-chmod +r /usr/lib/systemd/system/mysqlchk.socket
-chmod +r /usr/lib/systemd/system/mysqlchk@.service
+yum install -y xinetd wget
+
+# Get bash program , socket and server 
+wget https://raw.githubusercontent.com/nguyenhungsync/percona-clustercheck/master/clustercheck
+chmod +x clustercheck
+mv clustercheck /usr/bin/
+
 
 ## Khoi tao user check
 
-mysql -u root -e "GRANT PROCESS ON *.* TO 'clustercheckuser'@'localhost' IDENTIFIED BY '123@123Aa'"
+mysql > GRANT PROCESS ON *.* TO 'clustercheckuser'@'localhost' IDENTIFIED BY '123@123Aa'
 
-## Start socket
 
-systemctl enable mysqlchk.socket
-systemctl start mysqlchk.socket
+## Khoi tao Service
+
+cat <<EOF>  /etc/xinetd.d/mysqlchk
+# default: on
+# description: mysqlchk
+service mysqlchk
+{
+        disable = no
+        flags = REUSE
+        socket_type = stream
+        port = 9200
+        wait = no
+        user = nobody
+        server = /usr/bin/clustercheck
+        log_on_failure += USERID
+        only_from = 0.0.0.0/0
+        per_source = UNLIMITED
+}
+EOF
+
+# Tạo service
+echo 'mysqlchk 9200/tcp # MySQL check' >> /etc/services
+
+
+# Bật xinetd
+systemctl restart xinetd
+systemctl enable xinetd
 
 ## FirewallD
 
