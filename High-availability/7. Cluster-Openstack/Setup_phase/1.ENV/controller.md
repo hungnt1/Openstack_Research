@@ -205,41 +205,39 @@ yum install -y mariadb mariadb-server python2-PyMySQL galera mariadb-server-gale
 ```
 cat <<EOF > /etc/my.cnf.d/openstack.cnf
 [mysqld]
+
 bind-address = 192.168.50.131
 default-storage-engine = innodb
 innodb_file_per_table = on
 max_connections = 4096
-collation-server = utf8_general_ci
-character-set-server = utf8
-expire-logs-days = 7
+collation_server = utf8_general_ci
+character_set_server = utf8
+expire_logs_days = 7
 log_slave_updates = 1
 log_bin_trust_function_creators = 1
-max-connect-errors = 1000000
+max_connect_errors = 1000000
 wait_timeout = 3600
-tmp-table-size = 32M
-max-heap-table-size = 32M
-query-cache-type = 0
-query-cache-size = 0M
-thread-cache-size = 50
-open-files-limit = 65535
-table-definition-cache = 4096
-table-open-cache = 10240
-innodb-flush-method = O_DIRECT
-innodb-log-file-size = 1024M
-innodb-flush-log-at-trx-commit = 1
-innodb-buffer-pool-size = 4096M
-innodb-read-io-threads = 2
-innodb-write-io-threads = 2
-innodb-doublewrite = 1
-innodb-log-buffer-size = 128M
-innodb-buffer-pool-instances = 8
-innodb-log-files-in-group = 2
-innodb-thread-concurrency = 64
+tmp_table_size = 32M
+max_heap_table_size = 32M
+query_cache_type = 0
+query_cache_size = 0M
+thread_cache_size = 50
+open_files_limit = 1024
+table_definition_cache = 4096
+innodb_flush_method = O_DIRECT
+innodb_log_file_size = 1024M
+innodb_flush_log_at_trx_commit = 1
+innodb_buffer_pool_size = 6000M
+innodb_buffer_pool_instances = 4
+innodb_read_io_threads = 2
+innodb_write_io_threads = 2
+innodb_doublewrite = 1
+innodb_log_buffer_size = 128M
+innodb_thread_concurrency = 64
 innodb_stats_on_metadata = 0
 connect_timeout = 43200
 max_allowed_packet = 1024M
-innodb_force_recovery = 4
-
+skip_name_resolve
 
 EOF
 ```
@@ -305,40 +303,41 @@ systemctl stop mariadb
 ```
 cat <<EOF > /etc/my.cnf.d/openstack.cnf
 [mysqld]
+
 bind-address = 192.168.50.132
 default-storage-engine = innodb
 innodb_file_per_table = on
 max_connections = 4096
-collation-server = utf8_general_ci
-character-set-server = utf8
-expire-logs-days = 7
+collation_server = utf8_general_ci
+character_set_server = utf8
+expire_logs_days = 7
 log_slave_updates = 1
 log_bin_trust_function_creators = 1
-max-connect-errors = 1000000
+max_connect_errors = 1000000
 wait_timeout = 3600
-tmp-table-size = 32M
-max-heap-table-size = 32M
-query-cache-type = 0
-query-cache-size = 0M
-thread-cache-size = 50
-open-files-limit = 65535
-table-definition-cache = 4096
-table-open-cache = 10240
-innodb-flush-method = O_DIRECT
-innodb-log-file-size = 1024M
-innodb-flush-log-at-trx-commit = 1
-innodb-buffer-pool-size = 4096M
-innodb-read-io-threads = 2
-innodb-write-io-threads = 2
-innodb-doublewrite = 1
-innodb-log-buffer-size = 128M
-innodb-buffer-pool-instances = 8
-innodb-log-files-in-group = 2
-innodb-thread-concurrency = 64
+tmp_table_size = 32M
+max_heap_table_size = 32M
+query_cache_type = 0
+query_cache_size = 0M
+thread_cache_size = 50
+open_files_limit = 1024
+table_definition_cache = 4096
+table_open_cache = 10240
+innodb_flush_method = O_DIRECT
+innodb_log_file_size = 1024M
+innodb_flush_log_at_trx_commit = 1
+innodb_buffer_pool_size = 6000M
+innodb_buffer_pool_instances = 4
+innodb_read_io_threads = 2
+innodb_write_io_threads = 2
+innodb_doublewrite = 1
+innodb_log_buffer_size = 128M
+innodb_thread_concurrency = 64
 innodb_stats_on_metadata = 0
 connect_timeout = 43200
 max_allowed_packet = 1024M
 innodb_force_recovery = 4
+skip_name_resolve
 
 EOF
 ```
@@ -398,40 +397,41 @@ firewall-cmd --reload
 ```
 cat <<EOF > /etc/my.cnf.d/openstack.cnf
 [mysqld]
-bind-address = 192.168.50.133
+
+bind-address = 192.168.50.13
 default-storage-engine = innodb
 innodb_file_per_table = on
 max_connections = 4096
-collation-server = utf8_general_ci
-character-set-server = utf8
-expire-logs-days = 7
+collation_server = utf8_general_ci
+character_set_server = utf8
+expire_logs_days = 7
 log_slave_updates = 1
 log_bin_trust_function_creators = 1
-max-connect-errors = 1000000
+max_connect_errors = 1000000
 wait_timeout = 3600
-tmp-table-size = 32M
-max-heap-table-size = 32M
-query-cache-type = 0
-query-cache-size = 0M
-thread-cache-size = 50
-open-files-limit = 65535
-table-definition-cache = 4096
-table-open-cache = 10240
-innodb-flush-method = O_DIRECT
-innodb-log-file-size = 1024M
-innodb-flush-log-at-trx-commit = 1
-innodb-buffer-pool-size = 4096M
-innodb-read-io-threads = 2
-innodb-write-io-threads = 2
-innodb-doublewrite = 1
-innodb-log-buffer-size = 128M
-innodb-buffer-pool-instances = 8
-innodb-log-files-in-group = 2
-innodb-thread-concurrency = 64
+tmp_table_size = 32M
+max_heap_table_size = 32M
+query_cache_type = 0
+query_cache_size = 0M
+thread_cache_size = 50
+open_files_limit = 1024
+table_definition_cache = 4096
+table_open_cache = 10240
+innodb_flush_method = O_DIRECT
+innodb_log_file_size = 1024M
+innodb_flush_log_at_trx_commit = 1
+innodb_buffer_pool_size = 6000M
+innodb_buffer_pool_instances = 4
+innodb_read_io_threads = 2
+innodb_write_io_threads = 2
+innodb_doublewrite = 1
+innodb_log_buffer_size = 128M
+innodb_thread_concurrency = 64
 innodb_stats_on_metadata = 0
 connect_timeout = 43200
 max_allowed_packet = 1024M
 innodb_force_recovery = 4
+skip_name_resolve
 
 EOF
 ```
