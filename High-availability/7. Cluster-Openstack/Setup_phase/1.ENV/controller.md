@@ -239,6 +239,7 @@ connect_timeout = 43200
 max_allowed_packet = 1024M
 skip_name_resolve
 
+
 EOF
 ```
 
@@ -322,7 +323,6 @@ query_cache_size = 0M
 thread_cache_size = 50
 open_files_limit = 1024
 table_definition_cache = 4096
-table_open_cache = 10240
 innodb_flush_method = O_DIRECT
 innodb_log_file_size = 1024M
 innodb_flush_log_at_trx_commit = 1
@@ -336,7 +336,6 @@ innodb_thread_concurrency = 64
 innodb_stats_on_metadata = 0
 connect_timeout = 43200
 max_allowed_packet = 1024M
-innodb_force_recovery = 4
 skip_name_resolve
 
 EOF
@@ -398,7 +397,7 @@ firewall-cmd --reload
 cat <<EOF > /etc/my.cnf.d/openstack.cnf
 [mysqld]
 
-bind-address = 192.168.50.13
+bind-address = 192.168.50.133
 default-storage-engine = innodb
 innodb_file_per_table = on
 max_connections = 4096
@@ -416,7 +415,6 @@ query_cache_size = 0M
 thread_cache_size = 50
 open_files_limit = 1024
 table_definition_cache = 4096
-table_open_cache = 10240
 innodb_flush_method = O_DIRECT
 innodb_log_file_size = 1024M
 innodb_flush_log_at_trx_commit = 1
@@ -430,7 +428,6 @@ innodb_thread_concurrency = 64
 innodb_stats_on_metadata = 0
 connect_timeout = 43200
 max_allowed_packet = 1024M
-innodb_force_recovery = 4
 skip_name_resolve
 
 EOF
@@ -458,7 +455,6 @@ wsrep_slave_threads=2
 wsrep_convert_LOCK_to_trx=0
 wsrep_retry_autocommit=1
 wsrep_auto_increment_control=1
-
 
 #Cluster name
 wsrep_cluster_name="galera_cluster"
