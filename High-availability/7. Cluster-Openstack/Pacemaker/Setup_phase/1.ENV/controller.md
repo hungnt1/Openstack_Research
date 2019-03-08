@@ -222,24 +222,24 @@ max_heap_table_size = 32M
 query_cache_type = 0
 query_cache_size = 0M
 thread_cache_size = 50
+thread_pool_idle_timeout = 2000
 open_files_limit = 1024
-table_definition_cache = 4096
+table_definition_cache = 100M
 innodb_flush_method = O_DIRECT
-innodb_log_file_size = 1024M
+innodb_log_file_size = 100M
 innodb_flush_log_at_trx_commit = 1
-innodb_buffer_pool_size = 6000M
-innodb_buffer_pool_instances = 4
+innodb_buffer_pool_size = 2048M
+innodb_buffer_pool_instances = 1
 innodb_read_io_threads = 2
 innodb_write_io_threads = 2
-innodb_doublewrite = 1
+innodb_doublewrite = off
 innodb_log_buffer_size = 128M
-innodb_thread_concurrency = 64
+innodb_thread_concurrency = 2
 innodb_stats_on_metadata = 0
 connect_timeout = 43200
 max_allowed_packet = 1024M
+max_execution_time = 3600
 skip_name_resolve
-
-
 EOF
 ```
 
@@ -254,7 +254,6 @@ wsrep_provider=/usr/lib64/galera/libgalera_smm.so
 #add your node ips here
 wsrep_cluster_address="gcomm://192.168.50.131,192.168.50.132,192.168.50.133"
 
-
 binlog_format=row
 innodb_locks_unsafe_for_binlog=1
 default_storage_engine=InnoDB
@@ -263,8 +262,6 @@ wsrep_slave_threads=2
 wsrep_convert_LOCK_to_trx=0
 wsrep_retry_autocommit=1
 wsrep_auto_increment_control=1
-
-
 
 #Cluster name
 wsrep_cluster_name="galera_cluster"
@@ -322,21 +319,22 @@ query_cache_type = 0
 query_cache_size = 0M
 thread_cache_size = 50
 open_files_limit = 1024
-table_definition_cache = 4096
+table_definition_cache = 100M
 innodb_flush_method = O_DIRECT
-innodb_log_file_size = 1024M
+innodb_log_file_size = 100M
 innodb_flush_log_at_trx_commit = 1
-innodb_buffer_pool_size = 6000M
-innodb_buffer_pool_instances = 4
+innodb_buffer_pool_size = 2048M
+innodb_buffer_pool_instances = 1
 innodb_read_io_threads = 2
 innodb_write_io_threads = 2
-innodb_doublewrite = 1
+innodb_doublewrite = off
 innodb_log_buffer_size = 128M
-innodb_thread_concurrency = 64
+innodb_thread_concurrency = 2
 innodb_stats_on_metadata = 0
 connect_timeout = 43200
 max_allowed_packet = 1024M
 skip_name_resolve
+
 
 EOF
 ```
@@ -414,23 +412,24 @@ query_cache_type = 0
 query_cache_size = 0M
 thread_cache_size = 50
 open_files_limit = 1024
-table_definition_cache = 4096
+table_definition_cache = 100M
 innodb_flush_method = O_DIRECT
-innodb_log_file_size = 1024M
+innodb_log_file_size = 100M
 innodb_flush_log_at_trx_commit = 1
-innodb_buffer_pool_size = 6000M
-innodb_buffer_pool_instances = 4
+innodb_buffer_pool_size = 2048M
+innodb_buffer_pool_instances = 1
 innodb_read_io_threads = 2
 innodb_write_io_threads = 2
-innodb_doublewrite = 1
+innodb_doublewrite = off
 innodb_log_buffer_size = 128M
-innodb_thread_concurrency = 64
+innodb_thread_concurrency = 2
 innodb_stats_on_metadata = 0
 connect_timeout = 43200
 max_allowed_packet = 1024M
 skip_name_resolve
 
 EOF
+
 ```
 
 
@@ -631,9 +630,6 @@ systemctl start memcached.service
 Memcached_servers = controller1:11211,controller2:11211,controller3:11211
 ```
 
-
-
-
 ## 8 Cấu hình HAproxy 
 
 ### 8.1. Cấu hình HAproxy và Pacemaker cho cụm MariaDB
@@ -687,7 +683,7 @@ systemctl enable xinetd
 
 ## FirewallD
 
-firewall-cmd --add-port=9200/tcp --permanent
+firewall-cmd --add-port={9200/tcp,4444/tcp} --permanent
 firewall-cmd --reload
 
 ```
