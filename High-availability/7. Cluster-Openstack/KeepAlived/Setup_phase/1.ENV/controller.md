@@ -86,9 +86,15 @@ firewall-cmd --add-port=9000/tcp --permanent
 firewall-cmd --reload
 ```
 
+- Khởi động dịch vụ
+```
+systemctl start haproxy
+systemctl enable haproxy
+```
+
 ## 3. KeepAvlied
 
-**Sử dụng Keepalived quản lý VirtualIP , theo dõi dịch vụ HAproxy
+**Sử dụng Keepalived quản lý VirtualIP , theo dõi dịch vụ HAproxy**
 
 - Cài đặt Keepalived
 ```
@@ -527,7 +533,7 @@ mysqladmin --user=root password "123@123Aa"
 
 ### Hết cấu hình 
 
-### 5.4. Khởi động dịch vụ trên 
+### 5.4. Khởi động dịch vụ trên các Controller
 
 - Khởi động dịch vụ
 
@@ -537,7 +543,7 @@ systemctl enable mariadb
 ```
 
 
-### 5.5. Cấu hình Cluster check trên các node Controller 
+### 5.5. Cấu hình Cluster check trên các  Controller 
 
 -  Clustercheck là  chương trình bash hữu ích để tạo proxy (ví dụ: HAProxy) có khả năng giám sát Galera MariaDB Cluster
 -  Cấu hình Clustercheck
