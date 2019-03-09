@@ -86,83 +86,13 @@ firewall-cmd --add-port=9000/tcp --permanent
 firewall-cmd --reload
 ```
 
-## 3. Pacemaker
+## 3. KeepAvlied
+
+**Sử dụng Keepalived quản lý VirtualIP , theo dõi dịch vụ HAproxy
 
 
-**Sử dụng Pacemaker quản lý VirtualIP và HAproxy Service**
 
 
-### 3.1 Cài đặt và cấu hình các thành phần
-
-- Cài đặt Pacemaker
-```
-yum install -y pacemaker pcs resource-agents
-```
-
-- Khởi động dịch vụ
-```
-systemctl start pcsd.service
-systemctl enable pcsd.service
-```
-
-- Cấu hình FirewallD
-
-```
-firewall-cmd --add-service=high-availability --permanent
-
-firewall-cmd --reload
-```
-
-- Cấu hình mật khẩu cho tài khoản `hacluster`. Trên các node có thể sử dụng mật khẩu khác nhau
-
-```
-echo "hacluster:123@123Aa" | chpasswd
-```  
-
-- Disable chức năng stonith
-```
-pcs property set stonith-enabled=false --force
-pcs quorum expected-votes 1
-
-```
-
-### 3.2 Khởi động Cluster
-
-- Gửi request đến các node và đăng nhập
-
-```
-pcs cluster auth controller1 controller2 controller3 -u hacluster -p 123@123Aa
-```  
-
-- Boostrap Cluster
-```
-pcs cluster setup --force --name ops_ctl_cluster controller1 controller2 controller3
-```
-
-- Khởi động Cluster
-```
-pcs cluster start --all
-pcs cluster enable --all
-```
-
-- Khởi tạo Resource VirtualIP ( 192.168.50.140  ) 
-```
-pcs resource create VirtualIP ocf:heartbeat:IPaddr2 ip=192.168.50.140 \
-cidr_netmask=32 op monitor interval=2s
-```
-
-- Khởi tạo Resource HAproxy
-```
-pcs resource create HAproxy systemd:haproxy op monitor interval=2s
-```
-
-- Cấu hình bắt buộc HAproxy và VIP hoạt động trên cùng 1 node
-```
-pcs constraint order VirtualIP then HAproxy
-pcs constraint colocation add VirtualIP with HAproxy INFINITY
-```
-
-  
 ## 4. Network Time Protocol ( NTP )  
 
 
