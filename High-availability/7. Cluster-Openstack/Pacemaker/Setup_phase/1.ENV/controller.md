@@ -92,7 +92,7 @@ firewall-cmd --reload
 **Sử dụng Pacemaker quản lý VirtualIP và HAproxy Service**
 
 
-### 3.1 Cài đặt và cấu hình các thành phần
+### 3.1 Cài đặt và cấu hình các thành phần trên các node Controller
 
 - Cài đặt Pacemaker
 ```
@@ -126,7 +126,7 @@ pcs quorum expected-votes 1
 
 ```
 
-### 3.2 Khởi động Cluster
+### 3.2 Khởi động động Cluster trên Controller 1
 
 - Gửi request đến các node và đăng nhập
 
@@ -162,6 +162,22 @@ pcs constraint order VirtualIP then HAproxy
 pcs constraint colocation add VirtualIP with HAproxy INFINITY
 ```
 
+
+### 3.2 . Khởi động, chuyện resource
+
+
+- Khởi động lại Resource HAproxy
+
+```
+pcs resource restart HAproxy
+```
+
+- Chuyển Resource về Node Controlller 1 ( để node 1 làm master cho các cấu hình Service)
+
+```
+pcs resource move VirtualIP controller1
+
+```
   
 ## 4. Network Time Protocol ( NTP )  
 
@@ -196,6 +212,8 @@ firewall-cmd --reload
 ```
 yum install -y mariadb mariadb-server python2-PyMySQL galera mariadb-server-galera.x86_64
 ```
+
+### Cấu hình riêng trên các node
 
 ### 5.2 .  Cấu hình Galera trên node Controlller 1
 
@@ -435,6 +453,7 @@ EOF
 ```
 
 
+
 - Khởi tạo file cấu hình tại `/etc/my.cnf.d`
 ```
 cat <<EOF > /etc/my.cnf.d/galera.cnf
@@ -482,7 +501,7 @@ firewall-cmd --add-port={3306/tcp,4567/tcp,4568/tcp,4444/tcp} --permanent
 firewall-cmd --reload
 ```
 
- -   Khởi tạo Cluster
+ - Khởi tạo Cluster
 ```
 galera_new_cluster
 ```
@@ -492,8 +511,9 @@ galera_new_cluster
 mysqladmin --user=root password "123@123Aa"
 ```
 
+### Hết cấu hình
 
-### 5.4. Khởi động dịch vụ
+### 5.4. Khởi  động dịch vụ trên các Controller Node 
 
 - Khởi động dịch vụ
 
@@ -502,6 +522,63 @@ systemctl start mariadb
 systemctl enable mariadb
 ```
 
+
+### 5.5. Cấu hình Cluster check trên các Controller Node
+
+
+
+-  Clustercheck là  chương trình bash hữu ích để tạo proxy (ví dụ: HAProxy) có khả năng giám sát Galera MariaDB Cluster
+-  Cấu hình Clustercheck
+```
+## cai dat package
+
+yum install -y xinetd wget
+
+# Get bash program , socket and server 
+wget https://raw.githubusercontent.com/nguyenhungsync/percona-clustercheck/master/clustercheck
+chmod +x clustercheck
+mv clustercheck /usr/bin/
+
+
+## Khoi tao user check
+
+mysql > GRANT PROCESS ON *.* TO 'clustercheckuser'@'localhost' IDENTIFIED BY '123@123Aa'
+
+
+## Khoi tao Service
+
+cat <<EOF>  /etc/xinetd.d/mysqlchk
+# default: on
+# description: mysqlchk
+service mysqlchk
+{
+        disable = no
+        flags = REUSE
+        socket_type = stream
+        port = 9200
+        wait = no
+        user = nobody
+        server = /usr/bin/clustercheck
+        log_on_failure += USERID
+        only_from = 0.0.0.0/0
+        per_source = UNLIMITED
+}
+EOF
+
+# Tạo service
+echo 'mysqlchk 9200/tcp # MySQL check' >> /etc/services
+
+
+# Bật xinetd
+systemctl restart xinetd
+systemctl enable xinetd
+
+## FirewallD
+
+firewall-cmd --add-port={9200/tcp,4444/tcp} --permanent
+firewall-cmd --reload
+
+```
 
 ## 6. RabbitMQ
 
@@ -632,92 +709,5 @@ systemctl start memcached.service
 Memcached_servers = controller1:11211,controller2:11211,controller3:11211
 ```
 
-## 8 Cấu hình HAproxy 
-
-### 8.1. Cấu hình HAproxy và Pacemaker cho cụm MariaDB
-
-
--  Clustercheck là  chương trình bash hữu ích để tạo proxy (ví dụ: HAProxy) có khả năng giám sát Galera MariaDB Cluster
--  Cấu hình Clustercheck
-```
-## cai dat package
-
-yum install -y xinetd wget
-
-# Get bash program , socket and server 
-wget https://raw.githubusercontent.com/nguyenhungsync/percona-clustercheck/master/clustercheck
-chmod +x clustercheck
-mv clustercheck /usr/bin/
-
-
-## Khoi tao user check
-
-mysql > GRANT PROCESS ON *.* TO 'clustercheckuser'@'localhost' IDENTIFIED BY '123@123Aa'
-
-
-## Khoi tao Service
-
-cat <<EOF>  /etc/xinetd.d/mysqlchk
-# default: on
-# description: mysqlchk
-service mysqlchk
-{
-        disable = no
-        flags = REUSE
-        socket_type = stream
-        port = 9200
-        wait = no
-        user = nobody
-        server = /usr/bin/clustercheck
-        log_on_failure += USERID
-        only_from = 0.0.0.0/0
-        per_source = UNLIMITED
-}
-EOF
-
-# Tạo service
-echo 'mysqlchk 9200/tcp # MySQL check' >> /etc/services
-
-
-# Bật xinetd
-systemctl restart xinetd
-systemctl enable xinetd
-
-## FirewallD
-
-firewall-cmd --add-port={9200/tcp,4444/tcp} --permanent
-firewall-cmd --reload
-
-```
-
-- Cấu hình HAproxy cho dịch vụ MariaDB tại `/etc/haproxy/haproxy.cfg`
-```
-cat <<EOF >>  /etc/haproxy/haproxy.cfg
-listen mariadb_cluster 192.168.50.140:3306
-        mode tcp
-        balance leastconn
-        option httpchk
-        stick-table type ip size 1000
-        stick on dst
-        option tcpka
-        default-server port 9200 inter 5s downinter 5s rise 3 fall 2 slowstart 60s maxconn 64 maxqueue 128 weight 100
-        server mariadb1 192.168.50.131:3306 check 
-        server mariadb2 192.168.50.132:3306 check backup
-        server mariadb3 192.168.50.133:3306 check backup 
-EOF
-```
-
-- Khởi động lại Resource HAproxy
-
-```
-pcs resource restart HAproxy
-```
-
-- Chuyển Resource về Node Controlller 1 ( để node 1 làm master cho các cấu hình Service)
-
-```
-pcs resource move VirtualIP controller1
-
-```
 
 END.
