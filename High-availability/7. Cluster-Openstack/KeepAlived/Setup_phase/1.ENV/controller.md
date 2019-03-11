@@ -230,6 +230,9 @@ firewall-cmd --reload
 
 ### 5.1 Cài đặt các thành phần 
   
+
+
+
 - Cài đặt MariaDB và Galera
 ```
 yum install -y mariadb mariadb-server python2-PyMySQL galera mariadb-server-galera.x86_64
@@ -277,7 +280,7 @@ innodb_log_buffer_size = 128M
 innodb_thread_concurrency = 2
 innodb_stats_on_metadata = 0
 connect_timeout = 43200
-max_allowed_packet = 1024M
+max_allowed_packet = 2048MB
 max_statement_time = 3600
 skip_name_resolve
 EOF

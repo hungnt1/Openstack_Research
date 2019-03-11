@@ -107,3 +107,6 @@ Ghi chép quá trình tìm hiểu OpenStack
 - [Tìm hiểu Cinder Backup sử dụng NFS](https://github.com/nguyenhungsync/Openstack_Research/blob/master/Advance/16.%20Cinder-Backup-NFS.md)
 - [Tìm hiểu Transfer và Extend Volume](https://github.com/nguyenhungsync/Openstack_Research/blob/master/Advance/17.%20Transfer-%26-Extend-Root-Volume.md)
 - [Tìm hiểu cấu hình HA L3 Agent trên các Compute Node](https://github.com/nguyenhungsync/Openstack_Research/blob/master/Advance/18.%20L3-Agent-HA-Compute.md)
+- [Tìm hiểu VM Password](https://github.com/nguyenhungsync/Openstack_Research/blob/master/Advance/20.%20Nova-password.md)
+
+
