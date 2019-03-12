@@ -248,7 +248,7 @@ yum install -y mariadb mariadb-server python2-PyMySQL galera mariadb-server-gale
 ```
 cat <<EOF > /etc/my.cnf.d/openstack.cnf
 [mysqld]
-
+log_error = /var/log/mariadb/error.log
 bind-address = 192.168.50.131
 default-storage-engine = innodb
 innodb_file_per_table = on
@@ -261,6 +261,8 @@ log_bin_trust_function_creators = 1
 max_connect_errors = 1000000
 wait_timeout = 3600
 tmp_table_size = 32M
+net_read_timeout = 20000
+net_write_timeout = 20000
 max_heap_table_size = 32M
 query_cache_type = 0
 query_cache_size = 0M
@@ -269,7 +271,7 @@ thread_pool_idle_timeout = 2000
 open_files_limit = 1024
 table_definition_cache = 100M
 innodb_flush_method = O_DIRECT
-innodb_log_file_size = 100M
+innodb_log_file_size = 300MB
 innodb_flush_log_at_trx_commit = 1
 innodb_buffer_pool_size = 2048M
 innodb_buffer_pool_instances = 1
@@ -280,9 +282,10 @@ innodb_log_buffer_size = 128M
 innodb_thread_concurrency = 2
 innodb_stats_on_metadata = 0
 connect_timeout = 43200
-max_allowed_packet = 2048MB
+max_allowed_packet = 128M
 max_statement_time = 3600
 skip_name_resolve
+
 EOF
 ```
 
@@ -344,7 +347,7 @@ systemctl stop mariadb
 ```
 cat <<EOF > /etc/my.cnf.d/openstack.cnf
 [mysqld]
-
+log_error = /var/log/mariadb/error.log
 bind-address = 192.168.50.132
 default-storage-engine = innodb
 innodb_file_per_table = on
@@ -357,14 +360,17 @@ log_bin_trust_function_creators = 1
 max_connect_errors = 1000000
 wait_timeout = 3600
 tmp_table_size = 32M
+net_read_timeout = 20000
+net_write_timeout = 20000
 max_heap_table_size = 32M
 query_cache_type = 0
 query_cache_size = 0M
 thread_cache_size = 50
+thread_pool_idle_timeout = 2000
 open_files_limit = 1024
 table_definition_cache = 100M
 innodb_flush_method = O_DIRECT
-innodb_log_file_size = 100M
+innodb_log_file_size = 300MB
 innodb_flush_log_at_trx_commit = 1
 innodb_buffer_pool_size = 2048M
 innodb_buffer_pool_instances = 1
@@ -375,10 +381,9 @@ innodb_log_buffer_size = 128M
 innodb_thread_concurrency = 2
 innodb_stats_on_metadata = 0
 connect_timeout = 43200
-max_allowed_packet = 1024M
+max_allowed_packet = 128M
 max_statement_time = 3600
 skip_name_resolve
-
 
 EOF
 ```
@@ -435,9 +440,8 @@ firewall-cmd --reload
   
 - Cấu hình MarriaDB Server cho OPS
 ```
-cat <<EOF > /etc/my.cnf.d/openstack.cnf
 [mysqld]
-
+log_error = /var/log/mariadb/error.log
 bind-address = 192.168.50.133
 default-storage-engine = innodb
 innodb_file_per_table = on
@@ -450,14 +454,17 @@ log_bin_trust_function_creators = 1
 max_connect_errors = 1000000
 wait_timeout = 3600
 tmp_table_size = 32M
+net_read_timeout = 20000
+net_write_timeout = 20000
 max_heap_table_size = 32M
 query_cache_type = 0
 query_cache_size = 0M
 thread_cache_size = 50
+thread_pool_idle_timeout = 2000
 open_files_limit = 1024
 table_definition_cache = 100M
 innodb_flush_method = O_DIRECT
-innodb_log_file_size = 100M
+innodb_log_file_size = 300MB
 innodb_flush_log_at_trx_commit = 1
 innodb_buffer_pool_size = 2048M
 innodb_buffer_pool_instances = 1
@@ -468,7 +475,7 @@ innodb_log_buffer_size = 128M
 innodb_thread_concurrency = 2
 innodb_stats_on_metadata = 0
 connect_timeout = 43200
-max_allowed_packet = 1024M
+max_allowed_packet = 128M
 max_statement_time = 3600
 skip_name_resolve
 
@@ -588,7 +595,6 @@ EOF
 
 # Tạo service
 echo 'mysqlchk 9200/tcp # MySQL check' >> /etc/services
-
 
 # Bật xinetd
 systemctl restart xinetd
