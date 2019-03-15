@@ -248,44 +248,43 @@ yum install -y mariadb mariadb-server python2-PyMySQL galera mariadb-server-gale
 ```
 cat <<EOF > /etc/my.cnf.d/openstack.cnf
 [mysqld]
+log_error = /var/log/mariadb/error.log
 bind-address = 192.168.50.131
 default-storage-engine = innodb
 innodb_file_per_table = on
-max_connections = 2000
+max_connections = 1000
 collation_server = utf8_general_ci
 character_set_server = utf8
 expire_logs_days = 7
 log_slave_updates = 1
 log_bin_trust_function_creators = 1
 max_connect_errors = 1000000
-wait_timeout = 3600
+wait_timeout = 28800
 tmp_table_size = 32M
-max_heap_table_size = 32M
-open_files_limit = 1024
-table_definition_cache = 100M
-connect_timeout = 43200
 net_read_timeout = 20000
 net_write_timeout = 20000
+max_heap_table_size = 32M
 query_cache_type = 0
 query_cache_size = 0M
 thread_cache_size = 50
 thread_pool_idle_timeout = 2000
+open_files_limit = 1024
+table_definition_cache = 100M
 innodb_flush_method = O_DIRECT
-innodb_flush_log_at_trx_commit = 0
 innodb_log_file_size = 300MB
-innodb_buffer_pool_size = 1024M
-innodb_buffer_pool_instances = 2
+innodb_flush_log_at_trx_commit = 1
+innodb_buffer_pool_size = 2048M
+innodb_buffer_pool_instances = 1
 innodb_read_io_threads = 2
 innodb_write_io_threads = 2
 innodb_doublewrite = off
 innodb_log_buffer_size = 128M
 innodb_thread_concurrency = 2
 innodb_stats_on_metadata = 0
+connect_timeout = 43200
 max_allowed_packet = 1024M
 max_statement_time = 3600
 skip_name_resolve
-log_error = /var/log/mariadb/error.log
-
 
 EOF
 ```
@@ -348,43 +347,43 @@ systemctl stop mariadb
 ```
 cat <<EOF > /etc/my.cnf.d/openstack.cnf
 [mysqld]
+log_error = /var/log/mariadb/error.log
 bind-address = 192.168.50.132
 default-storage-engine = innodb
 innodb_file_per_table = on
-max_connections = 2000
+max_connections = 1000
 collation_server = utf8_general_ci
 character_set_server = utf8
 expire_logs_days = 7
 log_slave_updates = 1
 log_bin_trust_function_creators = 1
 max_connect_errors = 1000000
-wait_timeout = 3600
+wait_timeout = 28800
 tmp_table_size = 32M
-max_heap_table_size = 32M
-open_files_limit = 1024
-table_definition_cache = 100M
-connect_timeout = 43200
 net_read_timeout = 20000
 net_write_timeout = 20000
+max_heap_table_size = 32M
 query_cache_type = 0
 query_cache_size = 0M
 thread_cache_size = 50
 thread_pool_idle_timeout = 2000
+open_files_limit = 1024
+table_definition_cache = 100M
 innodb_flush_method = O_DIRECT
-innodb_flush_log_at_trx_commit = 0
 innodb_log_file_size = 300MB
-innodb_buffer_pool_size = 1024M
-innodb_buffer_pool_instances = 2
+innodb_flush_log_at_trx_commit = 1
+innodb_buffer_pool_size = 2048M
+innodb_buffer_pool_instances = 1
 innodb_read_io_threads = 2
 innodb_write_io_threads = 2
 innodb_doublewrite = off
 innodb_log_buffer_size = 128M
 innodb_thread_concurrency = 2
 innodb_stats_on_metadata = 0
+connect_timeout = 43200
 max_allowed_packet = 1024M
 max_statement_time = 3600
 skip_name_resolve
-log_error = /var/log/mariadb/error.log
 
 
 EOF
@@ -444,43 +443,43 @@ firewall-cmd --reload
 ```
 cat <<EOF > /etc/my.cnf.d/openstack.cnf
 [mysqld]
+log_error = /var/log/mariadb/error.log
 bind-address = 192.168.50.133
 default-storage-engine = innodb
 innodb_file_per_table = on
-max_connections = 2000
+max_connections = 1000
 collation_server = utf8_general_ci
 character_set_server = utf8
 expire_logs_days = 7
 log_slave_updates = 1
 log_bin_trust_function_creators = 1
 max_connect_errors = 1000000
-wait_timeout = 3600
+wait_timeout = 28800
 tmp_table_size = 32M
-max_heap_table_size = 32M
-open_files_limit = 1024
-table_definition_cache = 100M
-connect_timeout = 43200
 net_read_timeout = 20000
 net_write_timeout = 20000
+max_heap_table_size = 32M
 query_cache_type = 0
 query_cache_size = 0M
 thread_cache_size = 50
 thread_pool_idle_timeout = 2000
+open_files_limit = 1024
+table_definition_cache = 100M
 innodb_flush_method = O_DIRECT
-innodb_flush_log_at_trx_commit = 0
 innodb_log_file_size = 300MB
-innodb_buffer_pool_size = 1024M
-innodb_buffer_pool_instances = 2
+innodb_flush_log_at_trx_commit = 1
+innodb_buffer_pool_size = 2048M
+innodb_buffer_pool_instances = 1
 innodb_read_io_threads = 2
 innodb_write_io_threads = 2
 innodb_doublewrite = off
 innodb_log_buffer_size = 128M
 innodb_thread_concurrency = 2
 innodb_stats_on_metadata = 0
+connect_timeout = 43200
 max_allowed_packet = 1024M
 max_statement_time = 3600
 skip_name_resolve
-log_error = /var/log/mariadb/error.log
 
 
 EOF
