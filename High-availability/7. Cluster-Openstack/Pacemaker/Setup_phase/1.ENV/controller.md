@@ -168,6 +168,14 @@ pcs quorum expected-votes 1
 
 ```
 
+- Disable mode quorum
+
+```
+pcs property set no-quorum-policy=ignore
+
+```
+
+
 - Chuyển Resource về Node Controlller 1 ( để node 1 làm master cho các cấu hình Service)
 
 ```
@@ -209,7 +217,6 @@ firewall-cmd --reload
 yum install -y mariadb mariadb-server python2-PyMySQL galera mariadb-server-galera.x86_64
 ```
 
-### Cấu hình riêng trên các node
 
 ### 5.2 .  Cấu hình Galera trên node Controlller 1
 
@@ -253,7 +260,7 @@ innodb_log_buffer_size = 128M
 innodb_thread_concurrency = 0
 innodb_stats_on_metadata = 0
 connect_timeout = 28800
-max_allowed_packet = 128M
+max_allowed_packet = 500M
 max_statement_time = 3600
 skip_name_resolve
 
@@ -353,7 +360,7 @@ innodb_log_buffer_size = 128M
 innodb_thread_concurrency = 0
 innodb_stats_on_metadata = 0
 connect_timeout = 28800
-max_allowed_packet = 128M
+max_allowed_packet = 500M
 max_statement_time = 3600
 skip_name_resolve
 
@@ -450,7 +457,7 @@ innodb_log_buffer_size = 128M
 innodb_thread_concurrency = 0
 innodb_stats_on_metadata = 0
 connect_timeout = 28800
-max_allowed_packet = 128M
+max_allowed_packet = 500M
 max_statement_time = 3600
 skip_name_resolve
 
@@ -520,7 +527,7 @@ mysqladmin --user=root password "123@123Aa"
 
 ### Hết cấu hình
 
-### 5.4. Khởi  động dịch vụ trên các Controller Node 
+### 5.4. Khởi động  động dịch vụ trên các Controller Node 
 
 - Khởi động dịch vụ
 
@@ -531,7 +538,6 @@ systemctl enable mariadb
 
 
 ### 5.5. Cấu hình Cluster check trên các Controller Node
-
 
 
 -  Clustercheck là  chương trình bash hữu ích để tạo proxy (ví dụ: HAProxy) có khả năng giám sát Galera MariaDB Cluster
