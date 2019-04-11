@@ -1,0 +1,101 @@
+
+
+## 1. idea 
+
+- Nếu phần cứng cùa một compute node bị lỗi, chúng ta có thể  di tản các máy ảo dựa vào các thông số resource trong database nova . Để evacuate các VM , các VM cần có disk trên các shared storage node hoặc Block Storage Volume . việc evacuate các VM giống như  khởi tạo máy ảo với, các disk sẽ được attack vào VM . Việc evacuate sẽ hoàn thành nếu server đang down vật lý . 
+
+
+
+
+- Kiểm tra hostcompute down 
+```
+[root@controller1 ~]# openstack hypervisor list
++----+---------------------+-----------------+----------------+-------+
+| ID | Hypervisor Hostname | Hypervisor Type | Host IP        | State |
++----+---------------------+-----------------+----------------+-------+
+|  2 | compute1            | QEMU            | 192.168.50.134 | up    |
+|  5 | compute2            | QEMU            | 192.168.50.135 | down  |
++----+---------------------+-----------------+----------------+-------+
+
+```
+
+- Thực hiện chuyển máy ảo trên compute2 sang compute 1
+```
+[root@controller1 ~]# nova host-evacuate --target_host compute1 compute2
++--------------------------------------+-------------------+---------------+
+| Server UUID                          | Evacuate Accepted | Error Message |
++--------------------------------------+-------------------+---------------+
+| 4599b8a0-e1e1-4559-aa63-c5e7565c408f | True              |               |
++--------------------------------------+-------------------+---------------+
+
+```
+
+
+- Log tren compute1
+
+```
+2019-04-11 10:00:56.661 20969 INFO nova.compute.manager [req-47f70f4f-48b5-4447-8adb-238d6273c378 4817cd17e7ec432ebaf10e8d6a70add8 f22ccf46cfa14946aa11c266826a7a28 - default default] [instance: 4599b8a0-e1e1-4559-aa63-c5e7565c408f] Evacuating instance
+2019-04-11 10:00:56.762 20969 INFO nova.compute.claims [req-47f70f4f-48b5-4447-8adb-238d6273c378 4817cd17e7ec432ebaf10e8d6a70add8 f22ccf46cfa14946aa11c266826a7a28 - default default] [instance: 4599b8a0-e1e1-4559-aa63-c5e7565c408f] Attempting claim on node compute1: memory 2048 MB, disk 0 GB, vcpus 2 CPU
+2019-04-11 10:00:56.762 20969 INFO nova.compute.claims [req-47f70f4f-48b5-4447-8adb-238d6273c378 4817cd17e7ec432ebaf10e8d6a70add8 f22ccf46cfa14946aa11c266826a7a28 - default default] [instance: 4599b8a0-e1e1-4559-aa63-c5e7565c408f] Total memory: 4095 MB, used: 2560.00 MB
+2019-04-11 10:00:56.763 20969 INFO nova.compute.claims [req-47f70f4f-48b5-4447-8adb-238d6273c378 4817cd17e7ec432ebaf10e8d6a70add8 f22ccf46cfa14946aa11c266826a7a28 - default default] [instance: 4599b8a0-e1e1-4559-aa63-c5e7565c408f] memory limit not specified, defaulting to unlimited
+2019-04-11 10:00:56.763 20969 INFO nova.compute.claims [req-47f70f4f-48b5-4447-8adb-238d6273c378 4817cd17e7ec432ebaf10e8d6a70add8 f22ccf46cfa14946aa11c266826a7a28 - default default] [instance: 4599b8a0-e1e1-4559-aa63-c5e7565c408f] Total disk: 27 GB, used: 8.00 GB
+2019-04-11 10:00:56.764 20969 INFO nova.compute.claims [req-47f70f4f-48b5-4447-8adb-238d6273c378 4817cd17e7ec432ebaf10e8d6a70add8 f22ccf46cfa14946aa11c266826a7a28 - default default] [instance: 4599b8a0-e1e1-4559-aa63-c5e7565c408f] disk limit not specified, defaulting to unlimited
+2019-04-11 10:00:56.764 20969 INFO nova.compute.claims [req-47f70f4f-48b5-4447-8adb-238d6273c378 4817cd17e7ec432ebaf10e8d6a70add8 f22ccf46cfa14946aa11c266826a7a28 - default default] [instance: 4599b8a0-e1e1-4559-aa63-c5e7565c408f] Total vcpu: 2 VCPU, used: 2.00 VCPU
+2019-04-11 10:00:56.765 20969 INFO nova.compute.claims [req-47f70f4f-48b5-4447-8adb-238d6273c378 4817cd17e7ec432ebaf10e8d6a70add8 f22ccf46cfa14946aa11c266826a7a28 - default default] [instance: 4599b8a0-e1e1-4559-aa63-c5e7565c408f] vcpu limit not specified, defaulting to unlimited
+2019-04-11 10:00:56.766 20969 INFO nova.compute.claims [req-47f70f4f-48b5-4447-8adb-238d6273c378 4817cd17e7ec432ebaf10e8d6a70add8 f22ccf46cfa14946aa11c266826a7a28 - default default] [instance: 4599b8a0-e1e1-4559-aa63-c5e7565c408f] Claim successful on node compute1
+2019-04-11 10:00:57.168 20969 INFO nova.compute.resource_tracker [req-47f70f4f-48b5-4447-8adb-238d6273c378 4817cd17e7ec432ebaf10e8d6a70add8 f22ccf46cfa14946aa11c266826a7a28 - default default] [instance: 4599b8a0-e1e1-4559-aa63-c5e7565c408f] Updating resource usage from migration
+2019-04-11 10:00:57.504 20969 INFO nova.compute.manager [req-47f70f4f-48b5-4447-8adb-238d6273c378 4817cd17e7ec432ebaf10e8d6a70add8 f22ccf46cfa14946aa11c266826a7a28 - default default] disk not on shared storage, evacuating from: ''
+2019-04-11 10:01:01.922 20969 INFO nova.network.neutronv2.api [req-47f70f4f-48b5-4447-8adb-238d6273c378 4817cd17e7ec432ebaf10e8d6a70add8 f22ccf46cfa14946aa11c266826a7a28 - default default] [instance: 4599b8a0-e1e1-4559-aa63-c5e7565c408f] Updating port 51ca8bae-bc8d-4995-b6c8-82b421d5e65e with attributes {'binding:profile': {}, 'binding:host_id': 'compute1'}
+2019-04-11 10:01:03.999 20969 WARNING nova.compute.manager [req-ce1b37b6-4072-44e1-8367-d90d23e656dc 8ec0f608d2b64de78ad68896dc5de5c5 77f8e26900f04f57828f4c0c43613f3c - default default] [instance: 4599b8a0-e1e1-4559-aa63-c5e7565c408f] Received unexpected event network-vif-unplugged-51ca8bae-bc8d-4995-b6c8-82b421d5e65e for instance with vm_state active and task_state rebuilding.
+2019-04-11 10:01:10.115 20969 INFO nova.compute.manager [req-47f70f4f-48b5-4447-8adb-238d6273c378 4817cd17e7ec432ebaf10e8d6a70add8 f22ccf46cfa14946aa11c266826a7a28 - default default] [instance: 4599b8a0-e1e1-4559-aa63-c5e7565c408f] Detaching volume 6f00dd8c-0e22-4f62-a183-6377ef0fadbe
+2019-04-11 10:01:16.966 20969 INFO nova.virt.block_device [req-47f70f4f-48b5-4447-8adb-238d6273c378 4817cd17e7ec432ebaf10e8d6a70add8 f22ccf46cfa14946aa11c266826a7a28 - default default] [instance: 4599b8a0-e1e1-4559-aa63-c5e7565c408f] Booting with blank volume at /dev/vda
+2019-04-11 10:01:21.416 20969 INFO nova.virt.libvirt.driver [req-47f70f4f-48b5-4447-8adb-238d6273c378 4817cd17e7ec432ebaf10e8d6a70add8 f22ccf46cfa14946aa11c266826a7a28 - default default] [instance: 4599b8a0-e1e1-4559-aa63-c5e7565c408f] Creating image
+2019-04-11 10:01:21.458 20969 INFO os_brick.initiator.connectors.iscsi [req-47f70f4f-48b5-4447-8adb-238d6273c378 4817cd17e7ec432ebaf10e8d6a70add8 f22ccf46cfa14946aa11c266826a7a28 - default default] Trying to connect to iSCSI portal 192.168.50.136:3260
+2019-04-11 10:01:25.712 20969 INFO os_vif [req-47f70f4f-48b5-4447-8adb-238d6273c378 4817cd17e7ec432ebaf10e8d6a70add8 f22ccf46cfa14946aa11c266826a7a28 - default default] Successfully plugged vif VIFOpenVSwitch(active=False,address=fa:16:3e:ff:7e:bf,bridge_name='br-int',has_traffic_filtering=True,id=51ca8bae-bc8d-4995-b6c8-82b421d5e65e,network=Network(8b73fe18-e307-4f11-9139-732cdddd50e9),plugin='ovs',port_profile=VIFPortProfileOpenVSwitch,preserve_on_delete=False,vif_name='tap51ca8bae-bc')
+2019-04-11 10:01:26.198 20969 INFO nova.compute.manager [req-018e3549-4b9a-44e5-aaef-36ce97f595e7 - - - - -] [instance: 4599b8a0-e1e1-4559-aa63-c5e7565c408f] VM Started (Lifecycle Event)
+2019-04-11 10:01:26.372 20969 INFO nova.compute.manager [req-018e3549-4b9a-44e5-aaef-36ce97f595e7 - - - - -] [instance: 4599b8a0-e1e1-4559-aa63-c5e7565c408f] VM Paused (Lifecycle Event)
+2019-04-11 10:01:26.647 20969 INFO nova.compute.manager [req-018e3549-4b9a-44e5-aaef-36ce97f595e7 - - - - -] [instance: 4599b8a0-e1e1-4559-aa63-c5e7565c408f] During the sync_power process the instance has moved from host compute2 to host compute1
+2019-04-11 10:01:28.810 20969 INFO nova.compute.manager [req-018e3549-4b9a-44e5-aaef-36ce97f595e7 - - - - -] [instance: 4599b8a0-e1e1-4559-aa63-c5e7565c408f] VM Resumed (Lifecycle Event)
+2019-04-11 10:01:28.820 20969 INFO nova.virt.libvirt.driver [-] [instance: 4599b8a0-e1e1-4559-aa63-c5e7565c408f] Instance spawned successfully.
+2019-04-11 10:01:29.135 20969 INFO nova.compute.manager [req-018e3549-4b9a-44e5-aaef-36ce97f595e7 - - - - -] [instance: 4599b8a0-e1e1-4559-aa63-c5e7565c408f] During the sync_power process the instance has moved from host compute2 to host compute1
+
+```
+
+- Log info VM
+```
+[root@controller1 nova]# openstack server show cent7
++-------------------------------------+----------------------------------------------------------+
+| Field                               | Value                                                    |
++-------------------------------------+----------------------------------------------------------+
+| OS-DCF:diskConfig                   | AUTO                                                     |
+| OS-EXT-AZ:availability_zone         | nova                                                     |
+| OS-EXT-SRV-ATTR:host                | compute1                                                 |
+| OS-EXT-SRV-ATTR:hypervisor_hostname | compute1                                                 |
+| OS-EXT-SRV-ATTR:instance_name       | instance-00000006                                        |
+| OS-EXT-STS:power_state              | Running                                                  |
+| OS-EXT-STS:task_state               | None                                                     |
+| OS-EXT-STS:vm_state                 | active                                                   |
+| OS-SRV-USG:launched_at              | 2019-04-11T03:01:28.000000                               |
+| OS-SRV-USG:terminated_at            | None                                                     |
+| accessIPv4                          |                                                          |
+| accessIPv6                          |                                                          |
+| addresses                           | External=192.168.30.161                                  |
+| config_drive                        |                                                          |
+| created                             | 2019-04-08T03:06:02Z                                     |
+| flavor                              | medium (1f0f04fa-5c04-4874-9a39-c3055f5f0fee)            |
+| hostId                              | 7964ced16a2c43b41e2721a0d479b87b0edb81bbb8f9d76eeea33dbf |
+| id                                  | 4599b8a0-e1e1-4559-aa63-c5e7565c408f                     |
+| image                               |                                                          |
+| key_name                            | None                                                     |
+| name                                | cent7                                                    |
+| progress                            | 0                                                        |
+| project_id                          | f22ccf46cfa14946aa11c266826a7a28                         |
+| properties                          |                                                          |
+| security_groups                     | name='default'                                           |
+| status                              | ACTIVE                                                   |
+| updated                             | 2019-04-11T03:01:29Z                                     |
+| user_id                             | 4817cd17e7ec432ebaf10e8d6a70add8                         |
+| volumes_attached                    | id='6f00dd8c-0e22-4f62-a183-6377ef0fadbe'                |
++-------------------------------------+----------------------------------------------------------+
+
+```
