@@ -41,43 +41,10 @@ yum install haproxy -y
 ```
 
 
-- Khởi tạo file cấu hình ban đầu cho HAProxy
-```
-cp /etc/haproxy/haproxy.cfg /etc/haproxy/haproxy.cfg.orig
+- Khởi tạo file cấu hình ban đầu cho HAProxy 
 
-cat <<EOF > /etc/haproxy/haproxy.cfg
+- https://github.com/nguyenhungsync/Openstack_Research/blob/master/High-availability/7.%20Cluster-Openstack/Pacemaker/10.HAproxy-Service.md
 
-global
-  chroot  /var/lib/haproxy
-  daemon
-  group  haproxy
-  maxconn  4000
-  pidfile  /var/run/haproxy.pid
-  user  haproxy
-
-defaults
-  log  global
-  maxconn  4000
-  option  redispatch
-  retries  3
-  mode    http
-  timeout  http-request 10s
-  timeout  queue 1m
-  timeout  connect 10s
-  timeout  client 1m
-  timeout  server 1m
-  timeout  check 10s
-  
-listen stats 192.168.50.140:9000
-  mode http
-  stats enable
-  stats uri /stats
-  stats realm HAProxy\ Statistics
-  stats auth admin:123@123Aa
-  stats admin if TRUE
-
-EOF
-```
 
 
 - Cấu hình FirewallD - stat webpage
@@ -196,10 +163,10 @@ yum install -y chrony
 
 - Cấu hình NTP Server - Cho phép subnet 192.168.50.0/24 đồng bộ 
 ```
-sed -i "s/server.*/server 0.asia.pool.ntp.org iburst/g" /etc/chrony.conf > /dev/nul
+sed -i "s/server.*/server vn.pool.ntp.org iburst/g" /etc/chrony.conf > /dev/nul
 echo "allow 192.168.50.0/24" >> /etc/chrony.conf
 systemctl enable chronyd.service
-systemctl start chronyd.service
+systemctl restart chronyd.service
 ```
 
 - Cấu hình FirewallD
@@ -623,10 +590,7 @@ firewall-cmd --add-port={4369/tcp,25672/tcp} --permanent ## RabitMQ Cluster Port
 firewall-cmd --reload
 ```
 
-- Cấu hình HA policy 
-```
-rabbitmqctl set_policy ha-all '^(?!amq\.).*' '{"ha-mode": "all"}'
-```
+
 
 ### 6.2. Khởi động Cluster
 
@@ -652,6 +616,10 @@ rabbitmqctl start_app
 
 ```
 
+- Cấu hình HA policy 
+```
+rabbitmqctl set_policy ha-all '^(?!amq\.).*' '{"ha-mode": "all"}'
+```
 
 - Kiểm tra Cluster
 ```
