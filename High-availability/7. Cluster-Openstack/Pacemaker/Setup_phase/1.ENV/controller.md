@@ -41,43 +41,10 @@ yum install haproxy -y
 ```
 
 
-- Khởi tạo file cấu hình ban đầu cho HAProxy
-```
-cp /etc/haproxy/haproxy.cfg /etc/haproxy/haproxy.cfg.orig
+- Khởi tạo file cấu hình ban đầu cho HAProxy 
 
-cat <<EOF > /etc/haproxy/haproxy.cfg
+- https://github.com/nguyenhungsync/Openstack_Research/blob/master/High-availability/7.%20Cluster-Openstack/Pacemaker/10.HAproxy-Service.md
 
-global
-  chroot  /var/lib/haproxy
-  daemon
-  group  haproxy
-  maxconn  4000
-  pidfile  /var/run/haproxy.pid
-  user  haproxy
-
-defaults
-  log  global
-  maxconn  4000
-  option  redispatch
-  retries  3
-  mode    http
-  timeout  http-request 10s
-  timeout  queue 1m
-  timeout  connect 10s
-  timeout  client 1m
-  timeout  server 1m
-  timeout  check 10s
-  
-listen stats 192.168.50.140:9000
-  mode http
-  stats enable
-  stats uri /stats
-  stats realm HAProxy\ Statistics
-  stats auth admin:123@123Aa
-  stats admin if TRUE
-
-EOF
-```
 
 
 - Cấu hình FirewallD - stat webpage
