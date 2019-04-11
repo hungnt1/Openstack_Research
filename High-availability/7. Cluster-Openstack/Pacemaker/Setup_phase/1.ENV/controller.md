@@ -163,7 +163,7 @@ yum install -y chrony
 
 - Cấu hình NTP Server - Cho phép subnet 192.168.50.0/24 đồng bộ 
 ```
-sed -i "s/server.*/server 0.asia.pool.ntp.org iburst/g" /etc/chrony.conf > /dev/nul
+sed -i "s/server.*/server vn.pool.ntp.org iburst/g" /etc/chrony.conf > /dev/nul
 echo "allow 192.168.50.0/24" >> /etc/chrony.conf
 systemctl enable chronyd.service
 systemctl start chronyd.service
