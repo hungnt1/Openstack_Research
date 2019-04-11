@@ -590,10 +590,7 @@ firewall-cmd --add-port={4369/tcp,25672/tcp} --permanent ## RabitMQ Cluster Port
 firewall-cmd --reload
 ```
 
-- Cấu hình HA policy 
-```
-rabbitmqctl set_policy ha-all '^(?!amq\.).*' '{"ha-mode": "all"}'
-```
+
 
 ### 6.2. Khởi động Cluster
 
@@ -619,6 +616,10 @@ rabbitmqctl start_app
 
 ```
 
+- Cấu hình HA policy 
+```
+rabbitmqctl set_policy ha-all '^(?!amq\.).*' '{"ha-mode": "all"}'
+```
 
 - Kiểm tra Cluster
 ```
