@@ -1,0 +1,65 @@
+#!/bin/sh
+#
+# netplug - policy agent for netplugd
+#
+# Copyright 2003 Key Research, Inc.
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License, version 2, as
+# published by the Free Software Foundation.  You are forbidden from
+# redistributing or modifying it under the terms of any other license,
+# including other versions of the GNU General Public License.
+#
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# General Public License for more details.
+# https://raw.githubusercontent.com/barakm/Netplug-config/master/netplug
+# 2019-05-30
+
+PATH=/usr/bin:/bin:/usr/sbin:/sbin
+export PATH
+
+dev="$1"
+interfaces="/etc/sysconfig/network-scripts"
+log="/tmp/netplug.log"
+
+
+action="$2"
+
+case "$action" in
+in)
+    if [ -x /sbin/ifup ]; then
+	test -f /etc/sysconfig/network-scripts/ifcfg-$dev
+        if [ $? -eq 0 ]; then
+            sudo echo "Network-script  da ton tai "
+        else
+            sudo sh -c "echo Cau hinh luc $(date) > $log"
+            sudo sh -c "touch /etc/sysconfig/network-scripts/ifcfg-$dev"
+            echo -e "DEVICE=$dev\nBOOTPROTO=dhcp\nONBOOT=yes" > $interfaces/ifcfg-$dev
+	    echo  $dev da duoc quan ly >> $log
+        fi
+	    exec /sbin/ifup "$dev"
+    else
+	    echo "Please teach me how to plug in an interface!" 1>&2
+	    exit 1
+    fi
+    ;;
+out)
+    if [ -x /sbin/ifdown ]; then
+	# At least on Fedora Core 1, the call to ip addr flush infloops
+	# /sbin/ifdown $dev && exec /sbin/ip addr flush $dev
+	exec /sbin/ifdown $dev
+    else
+	echo "Please teach me how to unplug an interface!" 1>&2
+	exit 1
+    fi
+    ;;
+probe)
+    exec /sbin/ip link set $dev up >/dev/null 2>&1
+    ;;
+*)
+    echo "I have been called with a funny action of '%s'!" 1>&2
+    exit 1
+    ;;
+esac
