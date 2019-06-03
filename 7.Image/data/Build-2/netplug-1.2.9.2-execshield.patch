@@ -1,0 +1,185 @@
+diff -up netplug-1.2.9.2/if_info.c.execshield netplug-1.2.9.2/if_info.c
+--- netplug-1.2.9.2/if_info.c.execshield	2008-12-23 00:36:23.000000000 +0100
++++ netplug-1.2.9.2/if_info.c	2013-02-25 17:50:17.163086627 +0100
+@@ -95,15 +95,16 @@ flags_str(char *buf, unsigned int fl)
+     return buf;
+ }
+ 
+-void
+-for_each_iface(int (*func)(struct if_info *))
++struct if_info *
++for_each_iface(int (*func)(struct if_info *, long), long param)
+ {
+     for(int i = 0; i < INFOHASHSZ; i++) {
+         for(struct if_info *info = if_info[i]; info != NULL; info = info->next) {
+-            if ((*func)(info))
+-                return;
++            if ((*func)(info, param))
++                return info;
+         }
+     }
++    return NULL;
+ }
+ 
+ /* Reevaluate the state machine based on the current state and flag settings */
+@@ -285,22 +286,20 @@ ifsm_flagchange(struct if_info *info, un
+ }
+ 
+ /* handle a script termination and update the state accordingly */
++int find_pid(struct if_info *i, long param) {
++    if (i->worker == param) {
++        return 1;
++    }
++    return 0;
++}
++
+ void ifsm_scriptdone(pid_t pid, int exitstatus)
+ {
+     int exitok = WIFEXITED(exitstatus) && WEXITSTATUS(exitstatus) == 0;
+     struct if_info *info;
+     assert(WIFEXITED(exitstatus) || WIFSIGNALED(exitstatus));
+ 
+-    int find_pid(struct if_info *i) {
+-        if (i->worker == pid) {
+-            info = i;
+-            return 1;
+-        }
+-        return 0;
+-    }
+-
+-    info = NULL;
+-    for_each_iface(find_pid);
++    info = for_each_iface(find_pid, pid);
+ 
+     if (info == NULL) {
+         do_log(LOG_INFO, "Unexpected child %d exited with status %d",
+diff -up netplug-1.2.9.2/main.c.execshield netplug-1.2.9.2/main.c
+--- netplug-1.2.9.2/main.c.execshield	2010-06-26 18:35:12.000000000 +0200
++++ netplug-1.2.9.2/main.c	2013-02-25 17:50:17.164086613 +0100
+@@ -175,6 +175,23 @@ child_handler(int sig, siginfo_t *info,
+ 
+ /* Poll the existing interface state, so we can catch any state
+    changes for which we may not have neen a netlink message. */
++static int pollflags(struct if_info *info, long param) {
++    struct ifreq ifr;
++
++    if (!if_match(info->name))
++        return 0;
++
++    memcpy(ifr.ifr_name, info->name, sizeof(ifr.ifr_name));
++    if (ioctl(param, SIOCGIFFLAGS, &ifr) < 0)
++        do_log(LOG_ERR, "%s: can't get flags: %m", info->name);
++    else {
++        ifsm_flagchange(info, ifr.ifr_flags);
++        ifsm_flagpoll(info);
++    }
++
++    return 0;
++}
++
+ static void
+ poll_interfaces(void)
+ {
+@@ -189,24 +206,13 @@ poll_interfaces(void)
+         close_on_exec(sockfd);
+     }
+ 
+-    int pollflags(struct if_info *info) {
+-        struct ifreq ifr;
+-
+-        if (!if_match(info->name))
+-            return 0;
+-
+-        memcpy(ifr.ifr_name, info->name, sizeof(ifr.ifr_name));
+-        if (ioctl(sockfd, SIOCGIFFLAGS, &ifr) < 0)
+-            do_log(LOG_ERR, "%s: can't get flags: %m", info->name);
+-        else {
+-            ifsm_flagchange(info, ifr.ifr_flags);
+-            ifsm_flagpoll(info);
+-        }
+-
+-        return 0;
+-    }
++    for_each_iface(pollflags, sockfd);
++}
+ 
+-    for_each_iface(pollflags);
++static int poll_flags(struct if_info *i, long param) {
++    if (if_match(i->name))
++        ifsm_flagpoll(i);
++    return 0;
+ }
+ 
+ int debug = 0;
+@@ -340,17 +346,11 @@ main(int argc, char *argv[])
+         { child_handler_pipe[0], POLLIN, 0 },
+     };
+ 
+-    {
+-        /* Run over each of the interfaces we know and care about, and
+-           make sure the state machine has done the appropriate thing
+-           for their current state. */
+-        int poll_flags(struct if_info *i) {
+-            if (if_match(i->name))
+-                ifsm_flagpoll(i);
+-            return 0;
+-        }
+-        for_each_iface(poll_flags);
+-    }
++    /* Run over each of the interfaces we know and care about, and
++       make sure the state machine has done the appropriate thing
++       for their current state. */
++    for_each_iface(poll_flags, 0);
++
+ 
+     for(;;) {
+         int ret;
+diff -up netplug-1.2.9.2/Makefile.execshield netplug-1.2.9.2/Makefile
+--- netplug-1.2.9.2/Makefile.execshield	2010-06-26 18:35:51.000000000 +0200
++++ netplug-1.2.9.2/Makefile	2013-02-25 17:50:17.164086613 +0100
+@@ -4,15 +4,15 @@ DESTDIR ?=
+ 
+ prefix ?=
+ bindir ?= $(prefix)/sbin
+-etcdir ?= $(prefix)/etc/netplug
++etcdir ?= $(prefix)/etc/netplug.d
+ initdir ?= $(prefix)/etc/rc.d/init.d
+ scriptdir ?= $(prefix)/etc/netplug.d
+ mandir ?= $(prefix)/usr/share/man
+ 
+ install_opts :=
+ 
+-CFLAGS += -Wall -std=gnu99 -DNP_ETC_DIR='"$(etcdir)"' \
+-	-DNP_SCRIPT_DIR='"$(scriptdir)"' -ggdb3 -O3 -DNP_VERSION='"$(version)"'
++CFLAGS += -std=gnu99 -DNP_ETC_DIR='"$(etcdir)"' \
++	-DNP_SCRIPT_DIR='"$(scriptdir)"' -DNP_VERSION='"$(version)"'
+ 
+ netplugd: config.o netlink.o lib.o if_info.o main.o
+ 	$(CC) $(LDFLAGS) -o $@ $^
+@@ -30,10 +30,12 @@ install:
+ 	install $(install_opts) -m 755 scripts/rc.netplugd $(DESTDIR)/$(initdir)/netplugd
+ 	install $(install_opts) -m 444 man/man8/netplugd.8 $(DESTDIR)/$(mandir)/man8
+ 
+-hg_root := $(shell hg root)
++#hg_root := $(shell hg root)
++hg_root := $(shell)
+ tar_root := netplug-$(version)
+ tar_file := $(hg_root)/$(tar_root).tar.bz2
+-files := $(shell hg manifest)
++#files := $(shell hg manifest)
++files := $(shell)
+ 
+ tarball: $(tar_file)
+ 
+diff -up netplug-1.2.9.2/netplug.h.execshield netplug-1.2.9.2/netplug.h
+--- netplug-1.2.9.2/netplug.h.execshield	2008-12-23 00:36:23.000000000 +0100
++++ netplug-1.2.9.2/netplug.h	2013-02-25 17:50:17.164086613 +0100
+@@ -83,7 +83,7 @@ struct if_info *if_info_update_interface
+                                          struct rtattr *attrs[]);
+ int if_info_save_interface(struct nlmsghdr *hdr, void *arg);
+ void parse_rtattrs(struct rtattr *tb[], int max, struct rtattr *rta, int len);
+-void for_each_iface(int (*func)(struct if_info *));
++struct if_info *for_each_iface(int (*func)(struct if_info *, long), long param);
+ 
+ void ifsm_flagpoll(struct if_info *info);
+ void ifsm_flagchange(struct if_info *info, unsigned int newflags);

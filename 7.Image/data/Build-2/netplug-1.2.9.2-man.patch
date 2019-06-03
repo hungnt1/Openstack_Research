@@ -1,0 +1,26 @@
+diff -up netplug-1.2.9.2/man/man8/netplugd.8.man netplug-1.2.9.2/man/man8/netplugd.8
+--- netplug-1.2.9.2/man/man8/netplugd.8.man     2008-12-23 00:36:23.000000000 +0100
++++ netplug-1.2.9.2/man/man8/netplugd.8 2013-02-25 15:20:13.759315644 +0100
+@@ -134,7 +134,7 @@ to run in the foreground, this option is
+ .\"
+ .Sh FILES
+ .Bl -tag -width Ds
+-.It Pa /etc/netplug/netplugd.conf
++.It Pa /etc/netplug.d/netplugd.conf
+ Default config file to read, if none is specified on the command line.
+ The config file format is one pattern per line, with white space,
+ empty lines, and comments starting with a
+@@ -165,13 +165,6 @@ can generate
+ events.  The command is run synchronously; it must exit with status
+ code 0 if it succeeds, otherwise with a non-zero exit code or signal.
+ .El
+-.It Pa /etc/rc.d/init.d/netplugd
+-The
+-.Xr init 8
+-script that starts, stops, and displays status of the
+-.Nm
+-daemon.
+-.El
+ .\"
+ .\"
+ .Sh AUTHOR

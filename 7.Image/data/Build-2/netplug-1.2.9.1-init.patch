@@ -1,0 +1,140 @@
+diff -up netplug-1.2.9.1/scripts/rc.netplugd.init netplug-1.2.9.1/scripts/rc.netplugd
+--- netplug-1.2.9.1/scripts/rc.netplugd.init	2008-12-23 00:36:23.000000000 +0100
++++ netplug-1.2.9.1/scripts/rc.netplugd	2009-09-21 14:49:42.000000000 +0200
+@@ -1,5 +1,12 @@
+ #!/bin/sh
+ #
++### BEGIN INIT INFO
++# Provides: netplugd
++# Short-Description: start and stop network plug daemon
++# Description: netplugd is a daemon for managing non-static network
++#              interfaces.
++### END INIT INFO
++#
+ # netplugd     This shell script takes care of starting and stopping
+ #              the network plug management daemon.
+ #
+@@ -17,48 +24,94 @@
+ # Source networking configuration.
+ . /etc/sysconfig/network
+ 
+-# Check that networking is up.
+-[ "${NETWORKING}" = "no" ] && exit 0
++[ -f /etc/sysconfig/netplugd ] && . /etc/sysconfig/netplugd
++
+ 
+-[ -x /sbin/netplugd ] || exit 0
++prog=netplugd
++exec=/sbin/netplugd
++config=/etc/netplug.d/netplugd.conf
++lockfile=/var/lock/subsys/netplugd
++pidfile=/var/run/netplugd.pid
++
++check() {
++	# Check that we're a privileged user
++	[ `id -u` = 0 ] || exit 4
++	
++	# Check if netplugd is executable
++	[ -x $exec ] || exit 5
++}
+ 
+-if [ -f /etc/sysconfig/netplugd ]; then
+-    . /etc/sysconfig/netplugd
++start () {
++        check
++
++	[ ${NETWORKING} = "no" ] && exit 1
++	[ -f $config ] || exit 6
++
++	echo -n $"Starting $prog: "
++	daemon $exec ${NETPLUGDARGS} -p $pidfile
++	RETVAL=$?
++	echo
++
++	[ $RETVAL -eq 0 ] && touch $lockfile
++	return $RETVAL
++}
++
++stop () {
++        check
++
++	echo -n $"Shutting down $prog: "
++	killproc $prog
++	RETVAL=$?
++	echo
++
++	[ $RETVAL -eq 0 ] && rm -f $lockfile
++	return $RETVAL
++}
++
++restart() {
++	stop
++	start
++}
++
++rh_status() {
++    status $prog
++}
++
++rh_status_q() {
++    rh_status >/dev/null 2>&1
++}
++
++if [ $# -gt 1 ]; then
++    exit 2
+ fi
+ 
+-# See how we were called.
+ case "$1" in
+   start)
+-	# Start daemon.
+-	echo -n $"Starting network plug daemon: "
+-	daemon /sbin/netplugd ${NETPLUGDARGS} -p /var/run/netplugd.pid
+-	RETVAL=$?
+-	echo
+-	[ $RETVAL -eq 0 ] && touch /var/lock/subsys/netplugd
++	rh_status_q && exit 0
++	start
+ 	;;
+   stop)
+-	# Stop daemon.
+-	echo -n $"Shutting down network plug daemon: "
+-	killproc netplugd
+-	RETVAL=$?
+-	echo
+-	[ $RETVAL -eq 0 ] && rm -f /var/lock/subsys/netplugd
++	rh_status_q || exit 0
++	stop
+ 	;;
+-  status)
+-	status netplugd
+-	RETVAL=$?
++  restart|force-reload)
++	restart
+ 	;;
+-  restart|reload)
+-	$0 stop
+-	$0 start
++  reload)
++        rh_status_q || exit 7
++        restart
++        ;;
++  condrestart|try-restart)
++	rh_status_q || exit 0
++	restart
+ 	;;
+-  condrestart)
+-	[ -f /var/lock/subsys/netplugd ] && restart || :
++  status)
++	rh_status
+ 	;;
+   *)
+-	echo $"Usage: $0 {start|stop|status|restart}"
+-	RETVAL=1
++	echo $"Usage: $0 {start|stop|status|restart|condrestart|try-restart|reload|force-reload}"
++	exit 2
+ 	;;
+ esac
+ 
+-exit $RETVAL
++exit $?
